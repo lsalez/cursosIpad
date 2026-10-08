@@ -10,7 +10,7 @@ consumir cursos con seguimiento de progreso.
 
 ## Progreso
 
-**Fase actual:** Fase 8 — Visor HTML · **% global:** 57% · **Última act.:** 2026-10-08
+**Fase actual:** Fase 9 — Biblioteca macOS + importador · **% global:** 64% · **Última act.:** 2026-10-08
 
 | # | Fase | Estado | Cerrada |
 |---|------|--------|---------|
@@ -22,7 +22,7 @@ consumir cursos con seguimiento de progreso.
 | 5 | Sidecar + progreso | ✅ | 2026-10-08 |
 | 6 | Reproductor de video | ✅ | 2026-10-08 |
 | 7 | Visor PDF | ✅ | 2026-10-08 |
-| 8 | Visor HTML | ⬜ | — |
+| 8 | Visor HTML | ✅ | 2026-10-08 |
 | 9 | Biblioteca macOS + importador | ⬜ | — |
 | 10 | Editor de curso (Mac) | ⬜ | — |
 | 11 | Transferencia por WiFi | ⬜ | — |
@@ -1158,13 +1158,27 @@ insertó como Fase 3 al detectar que faltaba cubrirla explícitamente.
 
 **Checklist:**
 
-- [ ] `HTMLViewerView` con `WKWebView`
-- [ ] Carga `file://` con acceso a carpeta local (links relativos a PDFs/videos)
-- [ ] Detecta scroll position al cerrar (guarda como "segundos virtuales")
-- [ ] Botón "Marcar como visto"
-- [ ] iPad: split view (HTML a la izquierda, currículum a la derecha)
+- [x] `HTMLViewerView` con `WKWebView`
+- [x] Carga `file://` con acceso a carpeta local (links relativos a PDFs/videos)
+- [x] Detecta scroll position al cerrar (guarda como "segundos virtuales")
+- [x] Botón "Marcar como visto"
+- [x] iPad: split view (HTML a la izquierda, currículum a la derecha)
 
 **Entregable:** HTMLs funcionan con links relativos y reanudar scroll.
+
+**Notas de implementación (desviaciones del plan original):**
+
+- `HTMLViewerRepresentable` envuelve `WKWebView` directamente (mismo patrón que `PDFViewerRepresentable` — un `UIViewRepresentable` sobre el SDK view, no un `UIViewControllerRepresentable`). El Coordinator es dueño del `WKWebView` y del token KVO de `scrollView.contentOffset`.
+- `loadFileURL(_:allowingReadAccessTo: courseDir)` carga el HTML con acceso al directorio del curso, así los links relativos (`<a href="intro.html">`, `<img src="cover.png">`) resuelven correctamente. `decidePolicyFor` bloquea cualquier navegación que no sea `file://` dentro del directorio concedido — sin red, sin `mailto:`, sin iframes externos. Esto es sandboxing deliberado para contenido local.
+- El "segundos virtuales" del plan §17 se implementan como `contentOffset.y / 100.0` (1s ≈ 100px ≈ una línea de texto default). El factor no es load-bearing — solo round-trip en disco; lo centralizamos en `HTMLViewerRepresentable.offset(from:)` para que cualquier ajuste futuro viva en un solo lugar.
+- Restauración de scroll en `webView(_:didFinish:)` (no en `didStartProvisionalNavigation`): a `didFinish` el DOM está laid out y `scrollView.contentSize` ya está calculado, así `setContentOffset` funciona sin un hop a JS. Mismo hook usado por el jump a párrafo (`evaluateJavaScript` con un selector que cuenta block-level elements — `p,h1..h6,li,blockquote,pre,div,section,article,header,footer,main,aside`).
+- **Resume-race gate simplificado:** un solo flag `hasIssuedInitialRestore` en el Coordinator (vs los dos flags del video player — `didIssueInitialSeek` + `didReceiveFirstContentTime`). HTML no tiene un equivalente a `AVPlayer.currentItem.status == .readyToPlay`, así que un gate es suficiente. Sin él, el primer KVO tick del scroll observer escribiría `positionSeconds: 0` y borraría el punto de resume persistido (mismo bug que en video, distinto trigger).
+- Guard de "una sola vez" en el callback de consumo de posición (`didCallOnPositionConsumed`): si el `.id(item.id)` swap dispara el callback por accidente, no se vuelve a invocar — y un reopen del mismo curso no limpia el banner prematuramente.
+- **Bonus de UX no estaba en el checklist:** toggle de pantalla completa en la top bar (espejo del bonus de Fase 7 para el visor PDF — iPad oculta la columna del currículum, iPhone oculta los tabs de "Acerca de/Recursos").
+- **Bonus de UX:** flush cada 30s además del flush en `dismantleUIView` (plan §17 dice "on close y cada 30s"). Implementado con `Timer.publish(every: 30, on: .main, in: .common)` en el `body`; solo escribe si el representable reportó un offset nuevo desde el último flush (no churn cuando el usuario está inactivo).
+- `SearchPositionBanner` ya no dice "El visor con scroll a párrafo llega en la Fase 8" — actualizado para mencionar el visor funcionando.
+- `CourseDetailView.handleOpenLesson` ya no muestra la alerta "Próximamente" para HTML — ahora hace `selectedLesson = item` igual que video y PDF. La extensión `SearchPosition.paragraphIndexForHTML` se agregó como espejo de `startSecondsForVideo` para que el detail view pase un único `Int?` al visor sin importar la forma de la posición.
+- Verificación end-to-end del visor (tap real en una lección HTML, scroll, link relativo, jump a párrafo) queda como pendiente para el usuario en simulador con GUI — el entorno actual no tiene Simulator.app corriendo ni herramientas de UI automation. Build green + indexer reconoció los 3 HTML del curso de prueba (FTS5 muestra los 14 bloques de `index.html` con paragraph_index correcto) + logs de launch sin errores de HTMLViewer/WKWebView + la API pública se probó indirectamente vía el path de `decidePolicyFor` y la serialización de KVO.
 
 ---
 
