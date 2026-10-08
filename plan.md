@@ -10,12 +10,12 @@ consumir cursos con seguimiento de progreso.
 
 ## Progreso
 
-**Fase actual:** Fase 1 — Indexador de cursos (iOS) · **% global:** 7% · **Última act.:** 2026-10-08
+**Fase actual:** Fase 2 — Biblioteca iOS · **% global:** 14% · **Última act.:** 2026-10-08
 
 | # | Fase | Estado | Cerrada |
 |---|------|--------|---------|
 | 0 | Andamiaje | ✅ | 2026-10-08 |
-| 1 | Indexador de cursos (iOS) | ⬜ | — |
+| 1 | Indexador de cursos (iOS) | ✅ | 2026-10-08 |
 | 2 | Biblioteca iOS | ⬜ | — |
 | 3 | Detalle del curso | ⬜ | — |
 | 4 | Búsqueda full-text | ⬜ | — |
@@ -954,20 +954,20 @@ insertó como Fase 3 al detectar que faltaba cubrirla explícitamente.
 
 **Checklist:**
 
-- [ ] Modelos en `Shared/Sources/Shared/Models/`:
-  - [ ] `Course.swift` (id, folderName, title, coverFileName, tags, modules, totalProgress)
-  - [ ] `Module.swift` (id, folderName, title, items)
-  - [ ] `CourseItem.swift` (id, relativePath, type, title, sizeBytes, durationSeconds, progress)
-  - [ ] `ItemType` enum (`.video`, `.pdf`, `.html`)
-  - [ ] `ItemProgress.swift` (lastViewedAt, positionSeconds, lastPage, isCompleted, completionMarkedAt)
-- [ ] `CourseIndexer` en iOS:
-  - [ ] Escanea `Documents/Cursos/` recursivamente
-  - [ ] Detecta módulos = subcarpetas de primer nivel
-  - [ ] Detecta tipo por extensión (.mp4/.mov/.m4v/.webm/.pdf/.html/.htm)
-  - [ ] Detecta cover.jpg/cover.png/primera imagen en raíz
-  - [ ] Calcula sizeBytes y durationSeconds (video, con AVAsset)
-  - [ ] Devuelve `[Course]` ordenado por nombre
-- [ ] Pantalla de debug en iOS que muestra la lista cruda de cursos
+- [x] Modelos en `Shared/Sources/Shared/Models/`:
+  - [x] `Course.swift` (id, folderName, title, coverFileName, tags, modules, totalProgress)
+  - [x] `Module.swift` (id, folderName, title, items)
+  - [x] `CourseItem.swift` (id, relativePath, type, title, sizeBytes, durationSeconds, progress)
+  - [x] `ItemType` enum (`.video`, `.pdf`, `.html`)
+  - [x] `ItemProgress.swift` (lastViewedAt, positionSeconds, lastPage, isCompleted, completionMarkedAt)
+- [x] `CourseIndexer` en iOS:
+  - [x] Escanea `Documents/Cursos/` recursivamente
+  - [x] Detecta módulos = subcarpetas de primer nivel
+  - [x] Detecta tipo por extensión (.mp4/.mov/.m4v/.webm/.pdf/.html/.htm)
+  - [x] Detecta cover.jpg/cover.png/primera imagen en raíz
+  - [x] Calcula sizeBytes y durationSeconds (video, con AVAsset)
+  - [x] Devuelve `[Course]` ordenado por nombre
+- [x] Pantalla de debug en iOS que muestra la lista cruda de cursos
 
 **Entregable:** abrir la app y ver los nombres de las carpetas de cursos en `Documents/Cursos/`.
 
