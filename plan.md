@@ -10,7 +10,7 @@ consumir cursos con seguimiento de progreso.
 
 ## Progreso
 
-**Fase actual:** Fase 6 — Reproductor de video · **% global:** 42% · **Última act.:** 2026-10-08
+**Fase actual:** Fase 7 — Visor PDF · **% global:** 50% · **Última act.:** 2026-10-08
 
 | # | Fase | Estado | Cerrada |
 |---|------|--------|---------|
@@ -20,7 +20,8 @@ consumir cursos con seguimiento de progreso.
 | 3 | Detalle del curso | ✅ | 2026-10-08 |
 | 4 | Búsqueda full-text | ✅ | 2026-10-08 |
 | 5 | Sidecar + progreso | ✅ | 2026-10-08 |
-| 6 | Reproductor de video | ⬜ | — |
+| 6 | Reproductor de video | ✅ | 2026-10-08 |
+| 7 | Visor PDF | ⬜ | — |
 | 6 | Reproductor de video | ⬜ | — |
 | 7 | Visor PDF | ⬜ | — |
 | 8 | Visor HTML | ⬜ | — |
@@ -1092,24 +1093,39 @@ insertó como Fase 3 al detectar que faltaba cubrirla explícitamente.
 
 **Checklist:**
 
-- [ ] `VideoPlayerView` con `AVPlayerViewController`
-- [ ] Reanudar en `positionSeconds` al abrir
-- [ ] Guardar progreso cada 5 segundos
-- [ ] Guardar progreso al pausar
-- [ ] Guardar progreso al cerrar
-- [ ] Botón "Marcar como visto" en barra superior
-- [ ] Toast "Marcar como completado?" al llegar al 95%
-- [ ] Controles estándar (play/pause/scrub/velocidad)
-- [ ] PiP en iPad (configurado en `AVPlayerViewController`)
-- [ ] AirPlay (botón automático, `allowsExternalPlayback = true`)
-- [ ] `ThumbnailGenerator`:
-  - [ ] Extrae frame al 25% con `AVAssetImageGenerator`
-  - [ ] Cachea en `.thumbs/<ruta>.jpg` (320×180, q=0.7)
-  - [ ] Prioridad: provista (`<video>.jpg`) > auto-generada > placeholder
-  - [ ] Generación lazy en background, cancellable
-- [ ] iPad: split view (video a la izquierda, currículum a la derecha)
+- [x] `VideoPlayerView` con `AVPlayerViewController` (vía `VideoPlayerRepresentable`)
+- [x] Reanudar en `positionSeconds` al abrir (eager seek, AVPlayer lo buffers si no está ready todavía)
+- [x] Guardar progreso cada 5 segundos (vía `addPeriodicTimeObserver` en single-mechanism con pausa + MPNowPlayingInfoCenter + toast 95%)
+- [x] Guardar progreso al pausar (mismo observer, check `timeControlStatus == .paused`)
+- [x] Guardar progreso al cerrar (`tearDownPlayback` flusha + limpia `MPNowPlayingInfoCenter`)
+- [x] Botón "Marcar como visto" en barra superior (llama `library.markItemCompleted`)
+- [x] Toast "Marcar como completado?" al llegar al 95% (gate `toastFiredForThisItem`, reset en `.id(item.id)` swap)
+- [x] Controles estándar (play/pause/scrub/velocidad — vienen incluidos en `AVPlayerViewController`)
+- [x] PiP en iPad (configurado en `AVPlayerViewController`)
+- [x] AirPlay (botón automático, `allowsExternalPlayback = true` en `AVPlayer`)
+- [x] `ThumbnailGenerator`:
+  - [x] Extrae frame al 25% con `AVAssetImageGenerator` (320×180, JPEG q=0.7)
+  - [x] Cachea en `.thumbs/<safe-name>.jpg` con priority: `<video>.<img-ext>` provista > auto-generada
+  - [x] Prioridad: provista (`<video>.jpg`) > auto-generada > placeholder
+  - [x] Generación lazy en `Task.detached`, serializada por `ThumbnailQueue` actor (max 4 concurrentes)
+- [x] iPad: split view (video a la izquierda, currículum a la derecha, mismo `HStack(spacing: 0)` + `Divider().background(Color.appDivider)`)
 
 **Entregable:** abrir un curso → ir a su video → reanudar donde quedé, con miniaturas en currículum.
+
+**Notas de implementación (desviaciones del plan original):**
+
+- `UIViewControllerRepresentable` envuelve `AVPlayerViewController` (no SwiftUI `VideoPlayer` que es más opaco) — necesario para tener el `dismantleUIViewController` hook que limpia el `AVPlayer` viejo cuando `.id(item.id)` dispara un swap de lección.
+- Single periodic time observer a 1Hz (no `Timer.publish` + KVO) — un solo mecanismo para flush + pausa + MPNowPlayingInfoCenter + toast 95%. Cleanup via `removeTimeObserver` en `tearDownPlayback`.
+- `.id(item.id)` en `CourseDetailView.body` cuando hay lección seleccionada es CRÍTICO — sin él, swapear lección en el split iPad reusa la misma `AVPlayer` y sigue mostrando el video viejo. El `.id` fuerza reconstrucción completa del `VideoPlayerView` y `dismantleUIViewController` limpia el player viejo.
+- Guard de writer en `didIssueInitialSeek && didReceiveFirstContentTime` — sin esto, un timer armado antes de que el seek inicial surta efecto escribiría `positionSeconds: 0` y borraría el punto de resume persistido. (Bug real identificado en la review del plan.)
+- `updateItemProgress(courseID:relativePath:positionSeconds:lastViewedAt:isCompleted:completionMarkedAt:)` es field-keyed con defaults `nil` — evita la trampa de "olvidaste copiar `isCompleted`" que tendría una variante con closure `transform`.
+- `markItemCompleted` queda como single entry point para el botón "Marcar como visto" manual **y** el futuro auto-complete de Fase 13; ambos llaman a la misma función.
+- `MPNowPlayingInfoCenter` actualizado desde el periodic observer con `MPMediaItemPropertyTitle`, duración, posición, rate, y artwork (cover del curso via `library.coverURL(for:)`). Permite que Control Center / lock screen muestren el pill correcto durante AirPlay / background.
+- `ThumbnailQueue` actor (`Shared` no, vive en `iOS/Player/`) con semaphore FIFO de máximo 4 generaciones concurrentes — evita que un scroll con 50 lecciones de video abra 50 `AVAsset`s a la vez.
+- IPhone: el layout es stack (topbar + video + tabs "Acerca de/Recursos"). Currículum completo: out para iPhone (los visors de PDF/HTML son Fases 7/8).
+- `ItemType.imageExtensions` reusado como single source of truth para las extensiones reconocidas como miniatura provista.
+- `CurriculumLessonRow` usa `@State VideoThumbnailLoader` por lección. Inicializado lazy en `.task` con `@State` deferred (no en el init) para esperar al EnvironmentObject del padre. `.onDisappear` cancela la `Task`.
+- Headless simulator (no hay Simulator.app GUI): la verificación visual completa del player requiere Simulator.app corriendo, lo cual no está disponible en este entorno. Build green + sidecars seeded + thumbnails-only-on-row-appear confirmados en simulador. La verificación end-to-end del player queda como pendiente para el usuario (instrucciones en sección "Out of scope").
 
 ---
 
