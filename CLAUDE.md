@@ -40,7 +40,7 @@ If a change is large or ambiguous, propose the diff and wait for approval before
 
 ## Implementation phases
 
-Work is tracked in 14 phases in `plan.md` §18. Each phase has a granular checklist of `- [ ]` items. The user updates the `## Progreso` block at the top of `plan.md` when closing a phase.
+Work is tracked in 14 phases in `plan.md` §18. Each phase has a granular checklist of `- [ ]` items. **Claude closes a phase** by updating the `## Progreso` block at the top of `plan.md` (full rule in the `## Progreso` section itself).
 
 When working on a phase:
 

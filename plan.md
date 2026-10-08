@@ -31,9 +31,29 @@ consumir cursos con seguimiento de progreso.
 
 **Estados:** ⬜ pendiente · 🔄 en progreso · ✅ cerrada
 
-> Al cerrar una fase: cambiar ⬜ por ✅, poner la fecha en "Cerrada",
-> y actualizar la línea superior (fase actual, % global, fecha). Si
-> aparecen fases nuevas, agregarlas al final de esta tabla.
+> **Claude cierra las fases** (no el usuario). Se hace cuando se cumple
+> todo lo siguiente:
+>
+> 1. El checklist de la fase (en §18) está 100% verde (`- [x]`).
+> 2. El **Entregable** de la fase está verificado — no solo compilando,
+>    sino comprobado de verdad (ver regla en memoria `verify-after-implement`).
+> 3. El usuario da luz verde explícita ("cierra Fase N") o implícita
+>    al pedir continuar a la siguiente fase (por ejemplo, "commitea y
+>    prosigue" cuando la implementación + verificación ya estén verdes).
+>
+> Acciones concretas al cerrar:
+>
+> - Cambiar `⬜` por `✅` en la fila correspondiente de esta tabla.
+> - Poner la fecha ISO (`AAAA-MM-DD`) en la columna "Cerrada".
+> - Actualizar la línea superior: **Fase actual** → la siguiente;
+>   **% global** → `floor(fasesCerradas / totalFases × 100)` (si es la
+>   última fase del MVP, `% global = 100`); **Última act.** → hoy.
+> - Si la fase entró en `🔄` mientras se trabajaba en ella, transicionar
+>   a `✅` al cerrar.
+> - Commitar el cambio con tipo `docs:`, por ejemplo
+>   `docs: close Fase 0 (Andamiaje)`.
+> - Si aparecen fases nuevas (caso excepcional), agregarlas al final de
+>   la tabla con estado `⬜`.
 
 ---
 
