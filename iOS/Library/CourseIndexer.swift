@@ -92,14 +92,66 @@ public actor CourseIndexer {
         }
 
         let withDurations = await prefetchVideoDurations(courses: courses, coursesRoot: coursesRoot)
-        return withDurations.sorted { lhs, rhs in
+        // Sort before persisting so the writer walks courses in a
+        // stable order (avoids racing re-orders when the user pulls
+        // to refresh twice in a row).
+        let sorted = withDurations.sorted { lhs, rhs in
             lhs.folderName.localizedStandardCompare(rhs.folderName) == .orderedAscending
+        }
+        await seedMissingSidecars(courses: sorted, coursesRoot: coursesRoot)
+        return sorted
+    }
+
+    /// Walk the freshly-built `[Course]` and write a fresh sidecar
+    /// for any folder that doesn't have one yet. Lives here (not
+    /// inside `buildCourse`) for two reasons, both from the Fase 5
+    /// review: keeping `buildCourse` purely synchronous prevents the
+    /// actor from blocking on disk I/O, and running the writes after
+    /// the full build lets a reentrant `index()` see stable state.
+    ///
+    /// Errors are logged but never abort the scan; matching the
+    /// indexer's "be lenient" convention. Already-present sidecars
+    /// are *not* rewritten here — `LibraryStore.markCourseCompleted`
+    /// (and later, the per-item visors) own ongoing writes.
+    private func seedMissingSidecars(
+        courses: [Course],
+        coursesRoot: URL
+    ) async {
+        for course in courses {
+            let courseURL = coursesRoot.appendingPathComponent(
+                course.folderName,
+                isDirectory: true
+            )
+            let sidecarURL = SidecarStore.sidecarURL(for: courseURL)
+            // Cheap stat — no decode, no allocation worth worrying
+            // about on the actor.
+            guard !fileManager.fileExists(atPath: sidecarURL.path) else {
+                continue
+            }
+            let seed = SidecarStore.empty(course: course)
+            do {
+                try await SidecarStore.write(
+                    seed,
+                    to: courseURL,
+                    fileManager: fileManager
+                )
+            } catch {
+                print("[CourseIndexer] Failed to seed sidecar for \(course.folderName): \(error)")
+            }
         }
     }
 
     /// One-shot scan of a single course folder. Collects: cover filename,
     /// a `Module` for each first-level subdirectory, plus a virtual
     /// `General` `Module` for any recognized files sitting in the root.
+    ///
+    /// After the filesystem walk, merges in the persisted sidecar
+    /// (Fase 5): if `.cursosIpad.json` exists, its `courseId` becomes
+    /// the course's `id` (stable across scans) and its per-item
+    /// `progress` overlays each freshly-discovered item. The fresh
+    /// sidecar for newly-seen courses is written later, in
+    /// `seedMissingSidecars`, after the whole `indexDirectory` walk
+    /// completes — see that method for why.
     private func buildCourse(at courseURL: URL, coursesRoot: URL) -> Course {
         let folderName = courseURL.lastPathComponent
         let title = folderName
@@ -147,13 +199,25 @@ public actor CourseIndexer {
             ))
         }
 
-        return Course(
+        let fresh = Course(
             folderName: folderName,
             title: title,
             coverFileName: coverFileName,
             tags: [],
             modules: modules
         )
+
+        // Overlay persisted progress (if any). A nil sidecar here
+        // means "first time we see this course" — the UUID from
+        // `fresh.id` will be persisted in `seedMissingSidecars` and
+        // become stable from then on.
+        guard let sidecar = SidecarStore.read(
+            courseURL: courseURL,
+            fileManager: fileManager
+        ) else {
+            return fresh
+        }
+        return SidecarStore.apply(sidecar, to: fresh)
     }
 
     /// Build a `Module` from a first-level subdirectory. Recursively

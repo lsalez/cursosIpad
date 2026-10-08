@@ -1,7 +1,13 @@
 // Course.swift
 //
-// Mirrors plan.md §11. `id` is currently re-issued per scan; stable IDs
-// tied to the sidecar come in Fase 5 (Sidecar + progreso).
+// Mirrors plan.md §11.
+//
+// `id` was `let` during Fases 1–4 (re-issued per scan). In Fase 5 the
+// sidecar takes over as the source of truth for `id`, so the indexer
+// constructs a fresh `Course` (with whatever UUID happened to be
+// minted) and `SidecarStore.apply` overwrites `id` from the persisted
+// value. The field is now `var` to allow that single mutation site —
+// nothing else in the app ever reassigns it.
 //
 // `Codable` is included from Fase 1 even though the sidecar itself ships
 // in Fase 5 — the in-memory snapshot we already need (e.g. for sharing or
@@ -10,7 +16,7 @@
 import Foundation
 
 public struct Course: Identifiable, Codable, Equatable, Hashable, Sendable {
-    public let id: UUID
+    public var id: UUID
     public var folderName: String
     public var title: String
     public var coverFileName: String?

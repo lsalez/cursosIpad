@@ -161,25 +161,64 @@ final class LibraryStore: ObservableObject {
 
     /// Mark every item in the course as completed. Used by the
     /// "Marcar curso como completado" button on the detail hero.
-    /// In-memory only for Fase 3 — there's no sidecar yet, so the
-    /// next index reset will lose the state. Fase 5 (sidecar) makes
-    /// this persistent; the public surface here doesn't change.
+    ///
+    /// Fase 5 wiring: after the in-memory mutation, the new state is
+    /// persisted to `.cursosIpad.json` in the course folder. The
+    /// write is off-main (`Task.detached`) and serialized by the
+    /// `SidecarWriter` actor; failures are logged, never propagated,
+    /// so a disk hiccup never blocks the UI.
     func markCourseCompleted(courseID: UUID) {
         guard let index = courses.firstIndex(where: { $0.id == courseID }) else {
             return
         }
         var updated = courses[index]
+        let now = Date()
         for moduleIndex in updated.modules.indices {
             for itemIndex in updated.modules[moduleIndex].items.indices {
                 var item = updated.modules[moduleIndex].items[itemIndex]
                 if !item.progress.isCompleted {
                     item.progress.isCompleted = true
-                    item.progress.completionMarkedAt = Date()
+                    item.progress.completionMarkedAt = now
                 }
                 updated.modules[moduleIndex].items[itemIndex] = item
             }
         }
         courses[index] = updated
+        persistSidecar(for: updated)
+    }
+
+    /// Fire-and-forget write of the course's current state to its
+    /// `.cursosIpad.json`. The URL resolution happens here on the
+    /// main actor (so it sees `self.fileManager`); the actual write
+    /// runs off-main via `Task.detached` because a plain `Task { ... }`
+    /// inside a `@MainActor` context would inherit that isolation
+    /// under SE-0337 and we'd be doing disk I/O on the UI thread.
+    ///
+    /// The serialization between concurrent writes (button-mashing
+    /// or future per-item writers from Fase 6+) is handled inside
+    /// the `SidecarWriter` actor — this caller doesn't have to think
+    /// about it.
+    ///
+    /// `Course` is `Sendable` (value type, `Sendable` members), and
+    /// the captured `Sidecar` + `URL` are also `Sendable`, so the
+    /// `Task.detached` capture is safe.
+    private func persistSidecar(for course: Course) {
+        guard let courseURL = courseDirectoryURL(for: course) else {
+            return
+        }
+        let sidecar = SidecarStore.snapshot(course: course)
+        let folderName = course.folderName
+        Task.detached(priority: .utility) {
+            do {
+                try await SidecarStore.write(
+                    sidecar,
+                    to: courseURL,
+                    fileManager: FileManager.default
+                )
+            } catch {
+                print("[LibraryStore] Failed to persist sidecar for \(folderName): \(error)")
+            }
+        }
     }
 
     // MARK: - Bootstrap

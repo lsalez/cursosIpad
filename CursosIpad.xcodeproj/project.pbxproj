@@ -37,6 +37,7 @@
 		BA98669F28F260CCCAFF69C4 /* SubtitleParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CD66B4C33802E4CBA3CF277 /* SubtitleParser.swift */; };
 		BC9671D6FA2D2C9D977F3AD0 /* CourseAccentColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05511914277BFE47C9035804 /* CourseAccentColor.swift */; };
 		C1251CF529EBF3F85023A6F2 /* HtmlIndexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D7F92AC3B0016CD5E59FD8 /* HtmlIndexer.swift */; };
+		C91785828EF36A4D4177B304 /* SidecarStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E59B63665B7996435E2FB679 /* SidecarStore.swift */; };
 		CA61673AD1022B4B75FD8134 /* CoursePrimaryCTA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722298A0A2FA143553E6EB0E /* CoursePrimaryCTA.swift */; };
 		CCA0FD3ECFD737EF9A19D012 /* LibraryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F22319F993D121E691400787 /* LibraryStore.swift */; };
 		D17A640430F77FB744F1404F /* CourseDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CDFBD5C638DE34D2186F87 /* CourseDetailView.swift */; };
@@ -82,6 +83,7 @@
 		CB2D13A575291A3F4A1DF59C /* SearchPositionBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchPositionBanner.swift; sourceTree = "<group>"; };
 		D0F6BE1CE5D2C8257BBCDBA7 /* DetailTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailTab.swift; sourceTree = "<group>"; };
 		DCC09C4B08A671C054BB72C9 /* SearchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchService.swift; sourceTree = "<group>"; };
+		E59B63665B7996435E2FB679 /* SidecarStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidecarStore.swift; sourceTree = "<group>"; };
 		F22319F993D121E691400787 /* LibraryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryStore.swift; sourceTree = "<group>"; };
 		F22D438853774422FCC0C1F7 /* SearchResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResult.swift; sourceTree = "<group>"; };
 		FD9158EF0A6A6C0284754C31 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
@@ -114,6 +116,7 @@
 				41CBB816DF3D7AB0D32B9515 /* CoverColorExtractor.swift */,
 				09E197E1D5F82A730F788AB6 /* CoverImageLoader.swift */,
 				F22319F993D121E691400787 /* LibraryStore.swift */,
+				E59B63665B7996435E2FB679 /* SidecarStore.swift */,
 			);
 			path = Library;
 			sourceTree = "<group>";
@@ -364,6 +367,7 @@
 				EB88B34E9DAD80CFB96803A7 /* SearchResult.swift in Sources */,
 				E6D854CCDF5914FF966A5EB2 /* SearchResultsView.swift in Sources */,
 				8826D81F88AD3B95C446BB34 /* SearchService.swift in Sources */,
+				C91785828EF36A4D4177B304 /* SidecarStore.swift in Sources */,
 				405CF670E9C66BC0191E4C4D /* SubtitleCue.swift in Sources */,
 				A9819D8861CB938BC8EEE2F6 /* SubtitleIndexer.swift in Sources */,
 				BA98669F28F260CCCAFF69C4 /* SubtitleParser.swift in Sources */,
