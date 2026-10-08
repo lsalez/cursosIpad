@@ -18,6 +18,7 @@
 		337613326674377D0326BC03 /* DebugLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64F3388BDAB04D4708659E7 /* DebugLibraryView.swift */; };
 		347F7363D7AE1C2E13C6D483 /* VideoPlayerRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F1A92E970CB60FB841BC437 /* VideoPlayerRepresentable.swift */; };
 		3C33F37E89A9F2BE3D3FCEA8 /* Shared in Frameworks */ = {isa = PBXBuildFile; productRef = 5B4AA06957FA6BDDFDA5FF7B /* Shared */; };
+		3F118093CA2B5739C60C44C3 /* HTMLViewerRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F84181D3B6B19FB49E69C7 /* HTMLViewerRepresentable.swift */; };
 		405CF670E9C66BC0191E4C4D /* SubtitleCue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 158B96B3A820FD3E5DA9E940 /* SubtitleCue.swift */; };
 		4C10F567FEDEC5B4E163D06D /* LibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491A47CC2B5E7D24FCC01D0B /* LibraryView.swift */; };
 		51BF98E90BD9BFD42C5E45BF /* CoverImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09E197E1D5F82A730F788AB6 /* CoverImageLoader.swift */; };
@@ -30,6 +31,7 @@
 		70A40ECB09806B5F9E350FEE /* CursosIpadApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D143650172A9765142D3E3A /* CursosIpadApp.swift */; };
 		74923B98DB1B3F9CCD2171AD /* PDFViewerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8307977621F03519697085F /* PDFViewerView.swift */; };
 		815C138A6DA7D48ADD1412B3 /* CoverColorExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41CBB816DF3D7AB0D32B9515 /* CoverColorExtractor.swift */; };
+		834525AAE9D1174DADF7BF22 /* HTMLViewerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D13464D888BF90879222713 /* HTMLViewerView.swift */; };
 		8826D81F88AD3B95C446BB34 /* SearchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCC09C4B08A671C054BB72C9 /* SearchService.swift */; };
 		94F1AE0EB9D51A65691239E4 /* VideoThumbnailLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86E06083B71B9B1CB14911EA /* VideoThumbnailLoader.swift */; };
 		95FC3BB78DDD71C4EA68B45E /* ThumbnailGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 288DE4E55BF9D9CB0865F237 /* ThumbnailGenerator.swift */; };
@@ -66,6 +68,7 @@
 		2F1A92E970CB60FB841BC437 /* VideoPlayerRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerRepresentable.swift; sourceTree = "<group>"; };
 		351FC477AC44CADA27D1A000 /* CursosIpadMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CursosIpadMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		36E0A2398ECBA8EDAF56B52D /* CurriculumModuleRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurriculumModuleRow.swift; sourceTree = "<group>"; };
+		36F84181D3B6B19FB49E69C7 /* HTMLViewerRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLViewerRepresentable.swift; sourceTree = "<group>"; };
 		39D915D3004D7055000EF9A1 /* CourseFilesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseFilesView.swift; sourceTree = "<group>"; };
 		3C09071BDDE6DB1F3DEB5474 /* CursosIpad.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = CursosIpad.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		41CBB816DF3D7AB0D32B9515 /* CoverColorExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverColorExtractor.swift; sourceTree = "<group>"; };
@@ -76,6 +79,7 @@
 		563CB9F05B1BEBBC1104D74E /* CurriculumLessonRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurriculumLessonRow.swift; sourceTree = "<group>"; };
 		582D604610D451E0F953D6C5 /* SearchIndexingBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchIndexingBanner.swift; sourceTree = "<group>"; };
 		690B1DBA4364BE0ADF980C19 /* BrandColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrandColors.swift; sourceTree = "<group>"; };
+		6D13464D888BF90879222713 /* HTMLViewerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLViewerView.swift; sourceTree = "<group>"; };
 		6F6A3CA20A91EBD942B6CFDB /* SearchIndexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchIndexer.swift; sourceTree = "<group>"; };
 		722298A0A2FA143553E6EB0E /* CoursePrimaryCTA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoursePrimaryCTA.swift; sourceTree = "<group>"; };
 		834E5A47C350B9FF24F23BB6 /* CurriculumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurriculumView.swift; sourceTree = "<group>"; };
@@ -145,6 +149,7 @@
 		37E01D003332000824321CDD /* Player */ = {
 			isa = PBXGroup;
 			children = (
+				36F84181D3B6B19FB49E69C7 /* HTMLViewerRepresentable.swift */,
 				EF2F5408C5436652672BEEE2 /* PDFViewerRepresentable.swift */,
 				288DE4E55BF9D9CB0865F237 /* ThumbnailGenerator.swift */,
 				2F1A92E970CB60FB841BC437 /* VideoPlayerRepresentable.swift */,
@@ -208,6 +213,7 @@
 				36E0A2398ECBA8EDAF56B52D /* CurriculumModuleRow.swift */,
 				834E5A47C350B9FF24F23BB6 /* CurriculumView.swift */,
 				D0F6BE1CE5D2C8257BBCDBA7 /* DetailTab.swift */,
+				6D13464D888BF90879222713 /* HTMLViewerView.swift */,
 				C8307977621F03519697085F /* PDFViewerView.swift */,
 				CB2D13A575291A3F4A1DF59C /* SearchPositionBanner.swift */,
 				955CB0FEF409426B08E6A378 /* VideoPlayerView.swift */,
@@ -381,6 +387,8 @@
 				70A40ECB09806B5F9E350FEE /* CursosIpadApp.swift in Sources */,
 				337613326674377D0326BC03 /* DebugLibraryView.swift in Sources */,
 				17F60EC70067CA02A9147737 /* DetailTab.swift in Sources */,
+				3F118093CA2B5739C60C44C3 /* HTMLViewerRepresentable.swift in Sources */,
+				834525AAE9D1174DADF7BF22 /* HTMLViewerView.swift in Sources */,
 				C1251CF529EBF3F85023A6F2 /* HtmlIndexer.swift in Sources */,
 				A634D86E520C993735F79D5C /* LibraryEmptyState.swift in Sources */,
 				CCA0FD3ECFD737EF9A19D012 /* LibraryStore.swift in Sources */,

@@ -63,7 +63,7 @@ struct SearchPositionBanner: View {
         case .subtitle:
             return "Encontraste este momento buscando en los subtítulos. Toca la lección de abajo para abrir el reproductor en este punto."
         case .html:
-            return "Encontraste este párrafo buscando en los archivos HTML. El visor con scroll a párrafo llega en la Fase 8; por ahora la lección está marcada para que la encuentres rápido."
+            return "Encontraste este párrafo buscando en los archivos HTML. Toca la lección de abajo para abrir el visor y saltar directo al párrafo."
         }
     }
 }

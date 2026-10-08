@@ -263,10 +263,6 @@ struct CourseDetailView: View {
     /// too complex" error that bites every SwiftUI project once a
     /// viewer-dispatch `switch` grows past ~3 cases with non-trivial
     /// view arguments.
-    ///
-    /// HTML stays as an empty branch for now (Fase 8 — the
-    /// "Próximamente" alert is raised in `handleOpenLesson` until
-    /// then).
     @ViewBuilder
     private func lessonView(course: Course, lesson: CourseItem) -> some View {
         switch lesson.type {
@@ -287,9 +283,14 @@ struct CourseDetailView: View {
                 onSelectLesson: handleOpenLesson
             )
         case .html:
-            // Fase 8 — branch stays empty; the alert in
-            // `handleOpenLesson` covers HTML until then.
-            EmptyView()
+            HTMLViewerView(
+                course: course,
+                item: lesson,
+                onDismiss: { selectedLesson = nil },
+                onSelectLesson: handleOpenLesson,
+                initialParagraphIndex: pendingPosition?.paragraphIndexForHTML,
+                onPositionConsumed: consumePendingPosition
+            )
         }
     }
 
@@ -325,10 +326,10 @@ struct CourseDetailView: View {
     // MARK: - Actions
 
     /// Tap on a lesson in the curriculum, the files tab, or the iPad
-    /// split's curriculum column. Video and PDF lessons get pushed /
-    /// swapped into their respective viewers; HTML is still pending
-    /// (Fase 8), so we surface the same "Próximamente" alert it
-    /// used before Fase 7.
+    /// split's curriculum column. Video, PDF, and HTML lessons get
+    /// pushed / swapped into their respective viewers. The pending
+    /// position banner stays visible until the active viewer
+    /// actually consumes the seek (see `consumePendingPosition`).
     private func handleOpenLesson(_ item: CourseItem) {
         switch item.type {
         case .video:
@@ -345,10 +346,13 @@ struct CourseDetailView: View {
             // the FTS5 search index (plan §2 #9).
             selectedLesson = item
         case .html:
-            pendingLessonNotice = PendingLessonNotice(
-                title: "Próximamente",
-                message: "El visor de HTML llega en la Fase 8. Lección: \(item.title)."
-            )
+            // Same shape as the video branch. `HTMLViewerView` reads
+            // `item.progress.positionSeconds` for resume (saved as
+            // virtual seconds from the scroll offset, see
+            // `HTMLViewerRepresentable.offset(from:)`), and consumes
+            // `pendingPosition.paragraphIndexForHTML` to jump to a
+            // search-hit paragraph on first load.
+            selectedLesson = item
         }
     }
 
@@ -389,12 +393,20 @@ struct CourseDetailView: View {
 
 private extension SearchPosition {
     /// Returns the seconds to seek the video to, or `nil` for HTML
-    /// positions (Fase 8 will surface a paragraph-index-driven seek;
-    /// videos get the timestamp). Lets `CourseDetailView` pass a
-    /// single `Double?` to `VideoPlayerView` regardless of position
-    /// shape.
+    /// positions (which carry a paragraph index, not a timestamp).
+    /// Lets `CourseDetailView` pass a single `Double?` to
+    /// `VideoPlayerView` regardless of position shape.
     var startSecondsForVideo: Double? {
         if case let .subtitle(seconds, _, _) = self { return seconds }
+        return nil
+    }
+
+    /// Returns the 1-based paragraph index to scroll an HTML viewer
+    /// to, or `nil` for video positions. Lets `CourseDetailView`
+    /// pass a single `Int?` to `HTMLViewerView` regardless of
+    /// position shape. Mirrors `startSecondsForVideo` above.
+    var paragraphIndexForHTML: Int? {
+        if case let .html(index, _, _) = self { return index }
         return nil
     }
 }
