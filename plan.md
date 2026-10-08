@@ -10,7 +10,7 @@ consumir cursos con seguimiento de progreso.
 
 ## Progreso
 
-**Fase actual:** Fase 7 — Visor PDF · **% global:** 50% · **Última act.:** 2026-10-08
+**Fase actual:** Fase 8 — Visor HTML · **% global:** 57% · **Última act.:** 2026-10-08
 
 | # | Fase | Estado | Cerrada |
 |---|------|--------|---------|
@@ -21,9 +21,7 @@ consumir cursos con seguimiento de progreso.
 | 4 | Búsqueda full-text | ✅ | 2026-10-08 |
 | 5 | Sidecar + progreso | ✅ | 2026-10-08 |
 | 6 | Reproductor de video | ✅ | 2026-10-08 |
-| 7 | Visor PDF | ⬜ | — |
-| 6 | Reproductor de video | ⬜ | — |
-| 7 | Visor PDF | ⬜ | — |
+| 7 | Visor PDF | ✅ | 2026-10-08 |
 | 8 | Visor HTML | ⬜ | — |
 | 9 | Biblioteca macOS + importador | ⬜ | — |
 | 10 | Editor de curso (Mac) | ⬜ | — |
@@ -1133,15 +1131,26 @@ insertó como Fase 3 al detectar que faltaba cubrirla explícitamente.
 
 **Checklist:**
 
-- [ ] `PDFViewerView` con `PDFKit.PDFView`
-- [ ] Reanudar en `lastPage` al abrir
-- [ ] Guardar página al cambiar
-- [ ] Guardar página al cerrar
-- [ ] Botón "Marcar como visto"
-- [ ] Toggle miniaturas de páginas
-- [ ] iPad: split view (PDF a la izquierda, currículum a la derecha)
+- [x] `PDFViewerView` con `PDFKit.PDFView`
+- [x] Reanudar en `lastPage` al abrir
+- [x] Guardar página al cambiar
+- [x] Guardar página al cerrar
+- [x] Botón "Marcar como visto"
+- [x] Toggle miniaturas de páginas
+- [x] iPad: split view (PDF a la izquierda, currículum a la derecha)
 
 **Entregable:** PDFs funcionan idéntico a videos (reanudar + completar + split iPad).
+
+**Notas de implementación (desviaciones del plan original):**
+
+- `UIViewRepresentable` envuelve `PDFView` directamente (no `UIViewControllerRepresentable` con un VC intermediario) — `PDFView` ya es la chrome, no necesita un VC encima. El hook de teardown es `dismantleUIView` (no `dismantleUIViewController` como en `VideoPlayerRepresentable`).
+- El `Coordinator` es dueño del `PDFDocument` y del token del observer de `PDFViewPageChanged`. Esto ata el ciclo de vida del documento a la identidad de la representable, así un swap de lección (vía `.id(lesson.id)` en el padre) libera el documento viejo antes de montar el nuevo — sin esto, PDFs viejos quedarían retenidos en memoria.
+- Suscripción al `PDFViewPageChanged` notification ocurre **después** del `go(to:)` inicial. Si suscribimos antes, la primera notificación sería el propio resume seek; después, la primera notificación es siempre un cambio genuino del usuario. El "resume-race gate" del video player (`didIssueInitialSeek && didReceiveFirstContentTime`) **no es necesario** aquí porque `PDFView.go(to:)` es sincrónico.
+- `dismantleUIView` debe llamar `NotificationCenter.default.removeObserver(token)` y `uiView.document = nil`. Sin el removeObserver, cada swap de lección deja un observer zombie que apunta a un Coordinator muerto — el siguiente PDF no recibiría eventos de cambio de página.
+- `.id(lesson.id)` en `CourseDetailView.body` vive **fuera** del `Group { switch }` que dispatcha por `lesson.type`. Esto fuerza reconstrucción completa en cada swap de lección (disparando `dismantleUIView`/`dismantleUIViewController` en el viewer viejo). Si el `.id` va dentro del switch, SwiftUI reusa la misma identidad entre lecciones del mismo tipo y el `PDFView` viejo no se desmonta.
+- `LibraryStore.updateItemProgress` recibió `lastPage: Int? = nil` como **último** parámetro (signature-additive — no rompe los call sites del video player, que ya pasaba `positionSeconds`). El mutation block lo aplica a `item.progress.lastPage` con el mismo patrón `if let v = lastPage { ... }` que el resto de los campos.
+- El `switch` de dispatch de lección se extrajo a una computed property `lessonView(course:lesson:)` en `CourseDetailView` porque el type-checker de SwiftUI no puede resolver inline un `switch` con argumentos no triviales en ViewBuilders — el "expresión demasiado compleja" típico que pega cuando un dispatch ViewBuilder crece a 3+ casos.
+- **Bonus de UX no estaba en el checklist original:** un toggle de "pantalla completa" en la top bar que oculta la columna del currículum en iPad (el PDF toma el 100% del ancho) y la sección de "Acerca de/Recursos" en iPhone. Solicitado por el usuario durante la verificación.
 
 ---
 
