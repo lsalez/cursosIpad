@@ -10,7 +10,7 @@ consumir cursos con seguimiento de progreso.
 
 ## Progreso
 
-**Fase actual:** Fase 5 — Sidecar + progreso · **% global:** 35% · **Última act.:** 2026-10-08
+**Fase actual:** Fase 6 — Reproductor de video · **% global:** 42% · **Última act.:** 2026-10-08
 
 | # | Fase | Estado | Cerrada |
 |---|------|--------|---------|
@@ -19,7 +19,8 @@ consumir cursos con seguimiento de progreso.
 | 2 | Biblioteca iOS | ✅ | 2026-10-08 |
 | 3 | Detalle del curso | ✅ | 2026-10-08 |
 | 4 | Búsqueda full-text | ✅ | 2026-10-08 |
-| 5 | Sidecar + progreso | ⬜ | — |
+| 5 | Sidecar + progreso | ✅ | 2026-10-08 |
+| 6 | Reproductor de video | ⬜ | — |
 | 6 | Reproductor de video | ⬜ | — |
 | 7 | Visor PDF | ⬜ | — |
 | 8 | Visor HTML | ⬜ | — |
@@ -1063,18 +1064,27 @@ insertó como Fase 3 al detectar que faltaba cubrirla explícitamente.
 
 **Checklist:**
 
-- [ ] Modelo `Sidecar` en `Shared`:
-  - [ ] `Sidecar.swift` con Codable
-  - [ ] Schema v1: `version, courseId, title, coverFileName, description, tags, items`
-- [ ] `SidecarStore`:
-  - [ ] Lee `.cursosIpad.json` de la carpeta del curso
-  - [ ] Escribe atómicamente (escribe a tmp, renombra)
-  - [ ] Crea sidecar vacío si no existe
-  - [ ] Si un item del sidecar no existe en disco, lo ignora
-- [ ] Integración en `CourseIndexer`: carga sidecar y merge con items
-- [ ] Barra de progreso en biblioteca y detalle muestran datos reales del sidecar
+- [x] Modelo `Sidecar` en `Shared`:
+  - [x] `Sidecar.swift` con Codable
+  - [x] Schema v1: `version, courseId, title, coverFileName, description, tags, items`
+- [x] `SidecarStore`:
+  - [x] Lee `.cursosIpad.json` de la carpeta del curso
+  - [x] Escribe atómicamente (`Data.write(.atomic)` — tmp + rename en un syscall)
+  - [x] Crea sidecar vacío si no existe (en `seedMissingSidecars`, post-step de `index()`)
+  - [x] Si un item del sidecar no existe en disco, lo ignora (`apply` + `snapshot` lo podan)
+- [x] Integración en `CourseIndexer`: carga sidecar y merge con items (`buildCourse` aplica id+progress; `seedMissingSidecars` siembra cursos nuevos)
+- [x] Barra de progreso en biblioteca y detalle muestran datos reales del sidecar (verificado en simulador con sidecar inyectado mostrando 75%)
 
 **Entregable:** sidecars creados para todos los cursos detectados; barra de progreso refleja datos reales.
+
+**Notas de implementación (desviaciones del plan original):**
+
+- `Course.id` pasa de `let` a `var` — el único callsite que lo muta es `SidecarStore.apply` cuando reescribe el UUID desde el sidecar. Docstring en `Course.swift` lo explica.
+- `SidecarStore.apply` **solo consume `courseId` y progress por item** del sidecar. `title`/`coverFileName`/`description`/`tags` se mantienen filesystem-derived para que los renames en Finder fluyan naturalmente. El sidecar igual los semilla al primer indexado (para cuando llegue el editor Mac en Fase 10), pero iOS los ignora por ahora.
+- Writes serializados por un actor privado `SidecarWriter` dentro de `SidecarStore.write` — pone las bases para que los writers per-item de Fase 6+ (video cada 5s, PDF al cambiar página, HTML cada 30s) no requieran re-trabajo de concurrencia.
+- `.bak` en `read` cuando el decode falla: el archivo roto se mueve a `.cursosIpad.json.bak` y se siembra uno nuevo. Log de error + cero crash.
+- ISO8601 en fechas vía `JSONEncoder.dateEncodingStrategy = .iso8601` (pinned en `SidecarStore`, no se filtra al `Codable` de `Course` que sigue usando default).
+- Items huérfanos (relativePath borrado en disco) se podan automáticamente en cada write vía `snapshot(course:)`.
 
 ---
 
