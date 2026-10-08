@@ -10,14 +10,14 @@ consumir cursos con seguimiento de progreso.
 
 ## Progreso
 
-**Fase actual:** Fase 3 — Detalle del curso · **% global:** 21% · **Última act.:** 2026-10-08
+**Fase actual:** Fase 4 — Búsqueda full-text · **% global:** 28% · **Última act.:** 2026-10-08
 
 | # | Fase | Estado | Cerrada |
 |---|------|--------|---------|
 | 0 | Andamiaje | ✅ | 2026-10-08 |
 | 1 | Indexador de cursos (iOS) | ✅ | 2026-10-08 |
 | 2 | Biblioteca iOS | ✅ | 2026-10-08 |
-| 3 | Detalle del curso | ⬜ | — |
+| 3 | Detalle del curso | ✅ | 2026-10-08 |
 | 4 | Búsqueda full-text | ⬜ | — |
 | 5 | Sidecar + progreso | ⬜ | — |
 | 6 | Reproductor de video | ⬜ | — |
