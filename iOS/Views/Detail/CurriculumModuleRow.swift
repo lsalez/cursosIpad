@@ -19,9 +19,24 @@ struct CurriculumModuleRow: View {
     let module: Module
     let accent: Color
     let lastViewedItemID: UUID?
+    let highlightedItemID: UUID?
     let onTapLesson: (CourseItem) -> Void
 
     @State private var isExpanded: Bool = true
+
+    init(
+        module: Module,
+        accent: Color,
+        lastViewedItemID: UUID? = nil,
+        highlightedItemID: UUID? = nil,
+        onTapLesson: @escaping (CourseItem) -> Void
+    ) {
+        self.module = module
+        self.accent = accent
+        self.lastViewedItemID = lastViewedItemID
+        self.highlightedItemID = highlightedItemID
+        self.onTapLesson = onTapLesson
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -35,6 +50,7 @@ struct CurriculumModuleRow: View {
                             CurriculumLessonRow(
                                 item: item,
                                 isLastViewed: item.id == lastViewedItemID,
+                                isHighlighted: item.id == highlightedItemID,
                                 accent: accent,
                                 onTap: { onTapLesson(item) }
                             )

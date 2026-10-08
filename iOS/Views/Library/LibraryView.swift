@@ -7,12 +7,18 @@
 //
 // Source of truth: a `LibraryStore` injected via `@EnvironmentObject`.
 // The app-wide store is created in `CursosIpadApp` so this view (and
-// the future detail view) look at the same `courses` snapshot.
+// the detail view) look at the same `courses` snapshot.
 //
 // Wrapped in a `NavigationStack` here so iPhone gets the standard
 // push/transition behavior. On iPad the host (`RootView`) puts this
 // same view inside a `NavigationSplitView` sidebar — that gives us the
 // split layout without duplicating any UI code.
+//
+// **Fase 4 — search:** when `searchText` is non-empty, we swap the
+// body for `SearchResultsView`, which shows the three sections
+// (Cursos / Subtítulos / HTMLs). The same `.searchable` modifier
+// drives both modes; the parent decides what to do with the results
+// via callbacks.
 
 import Shared
 import SwiftUI
@@ -28,6 +34,16 @@ struct LibraryView: View {
     /// doesn't update the iPad split-view detail column reliably.
     let onSelectCourse: (Course) -> Void
 
+    /// Called when the user taps a subtitle search result. The
+    /// parent is responsible for setting
+    /// `store.highlightedItem` / `store.pendingSearchPosition` and
+    /// then routing to the course (the same `onSelectCourse` path).
+    let onSelectSubtitle: (SubtitleHit) -> Void
+
+    /// Called when the user taps an HTML search result. Same
+    /// contract as `onSelectSubtitle`.
+    let onSelectHtml: (HtmlHit) -> Void
+
     @State private var searchText: String = ""
     @State private var selectedTag: String? = nil
     @State private var sortOrder: LibrarySortOrder = .alphabetical
@@ -35,15 +51,25 @@ struct LibraryView: View {
     @State private var addMenuPresented: Bool = false
     @State private var pendingAlertMessage: String?
 
+    /// True when the user has typed something. Used to swap between
+    /// the catalog grid and the search results view.
+    private var isSearching: Bool {
+        !searchText.trimmingCharacters(in: .whitespaces).isEmpty
+    }
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                if !availableTags.isEmpty {
+                if !isSearching && !availableTags.isEmpty {
                     TagChipsRow(
                         tags: availableTags,
                         selected: $selectedTag
                     )
                     .padding(.bottom, 8)
+                }
+                if store.isIndexing {
+                    SearchIndexingBanner(progress: store.indexProgress)
+                        .padding(.bottom, 8)
                 }
                 content
             }
@@ -54,10 +80,22 @@ struct LibraryView: View {
         .background(Color.appBackground.ignoresSafeArea())
         .navigationTitle("Mis cursos")
         .navigationBarTitleDisplayMode(.large)
-        .searchable(text: $searchText, prompt: "Buscar curso")
+        .searchable(text: $searchText, prompt: "Buscar curso, subtítulo o HTML")
         .toolbar { toolbarContent }
         .refreshable { await store.refresh() }
         .task { await store.refresh() }
+        .onChange(of: searchText) { _, newValue in
+            // Forward every keystroke to the store. The service
+            // debounces internally so this doesn't translate into a
+            // query per keystroke.
+            store.updateSearch(newValue)
+        }
+        .onSubmit(of: .search) {
+            // Force an immediate run of the current query (skips
+            // the debounce). Tapping "Search" on the keyboard
+            // should feel snappy.
+            store.updateSearch(searchText)
+        }
         .overlay(alignment: .bottomTrailing) { addMenuButton }
         .confirmationDialog(
             "Agregar curso",
@@ -88,7 +126,7 @@ struct LibraryView: View {
         }
     }
 
-    // MARK: - Filtered + sorted courses
+    // MARK: - Filtered + sorted courses (catalog mode)
 
     private var visibleCourses: [Course] {
         let bySearch = searchText.isEmpty
@@ -118,6 +156,31 @@ struct LibraryView: View {
 
     @ViewBuilder
     private var content: some View {
+        if isSearching {
+            searchContent
+        } else {
+            catalogContent
+        }
+    }
+
+    @ViewBuilder
+    private var searchContent: some View {
+        if store.searchResults.isEmpty && !store.isIndexing {
+            LibraryNoResultsState(searchText: searchText, selectedTag: nil)
+                .padding(.top, 48)
+        } else {
+            SearchResultsView(
+                results: store.searchResults,
+                store: store,
+                onSelectCourse: onSelectCourse,
+                onSelectSubtitle: onSelectSubtitle,
+                onSelectHtml: onSelectHtml
+            )
+        }
+    }
+
+    @ViewBuilder
+    private var catalogContent: some View {
         if store.isLoading && store.courses.isEmpty {
             ProgressView("Escaneando…")
                 .frame(maxWidth: .infinity)
@@ -369,7 +432,7 @@ private struct LibraryNoResultsState: View {
         case (false, .some(let tag)):
             return "No hay cursos que coincidan con “\(searchText)” en la etiqueta \(tag)."
         case (false, nil):
-            return "No hay cursos que coincidan con “\(searchText)”."
+            return "No hay cursos, subtítulos ni HTMLs que coincidan con “\(searchText)”."
         case (true, .some(let tag)):
             return "No tienes cursos con la etiqueta \(tag) todavía."
         case (true, nil):

@@ -19,8 +19,23 @@ import SwiftUI
 struct CurriculumLessonRow: View {
     let item: CourseItem
     let isLastViewed: Bool
+    let isHighlighted: Bool
     let accent: Color
     let onTap: () -> Void
+
+    init(
+        item: CourseItem,
+        isLastViewed: Bool = false,
+        isHighlighted: Bool = false,
+        accent: Color,
+        onTap: @escaping () -> Void
+    ) {
+        self.item = item
+        self.isLastViewed = isLastViewed
+        self.isHighlighted = isHighlighted
+        self.accent = accent
+        self.onTap = onTap
+    }
 
     var body: some View {
         Button(action: onTap) {
@@ -144,13 +159,22 @@ struct CurriculumLessonRow: View {
         }
     }
 
-    // MARK: - Row background (highlight if last viewed)
+    // MARK: - Row background (highlight if last viewed or search target)
 
     @ViewBuilder
     private var rowBackground: some View {
         if isLastViewed {
             RoundedRectangle(cornerRadius: 8, style: .continuous)
                 .fill(accent.opacity(0.10))
+        } else if isHighlighted {
+            // Search hit: stronger highlight in the brand purple,
+            // distinct from the per-course accent.
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .fill(Color.appAccentFallback.opacity(0.16))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                        .strokeBorder(Color.appAccentFallback.opacity(0.4), lineWidth: 0.5)
+                )
         } else {
             Color.clear
         }

@@ -16,16 +16,18 @@
 //      `NavigationLink` inside a `NavigationSplitView` sidebar
 //      doesn't reliably update the detail column.
 //
-// The `LibraryStore` is created once at the app scope and injected
-// via `@EnvironmentObject` so every view (library, detail, future
-// search) sees the same `courses` snapshot.
+// The `LibraryStore` is created once at the app scope (via
+// `LibraryStore.makeDefault()` so the FTS5 search index is wired up
+// if the app sandbox supports it) and injected via `@EnvironmentObject`
+// so every view (library, detail, future search) sees the same
+// `courses` snapshot.
 
 import Shared
 import SwiftUI
 
 @main
 struct CursosIpadApp: App {
-    @StateObject private var library = LibraryStore()
+    @StateObject private var library = LibraryStore.makeDefault()
     @AppStorage("hasSeenWelcome") private var hasSeenWelcome: Bool = false
 
     var body: some Scene {
@@ -60,14 +62,27 @@ struct RootView: View {
         if horizontalSize == .regular {
             NavigationSplitView {
                 NavigationStack {
-                    LibraryView { course in
-                        selectedCourse = course
-                    }
+                    LibraryView(
+                        onSelectCourse: { course in
+                            selectedCourse = course
+                        },
+                        onSelectSubtitle: { hit in
+                            handleSubtitleHit(hit)
+                        },
+                        onSelectHtml: { hit in
+                            handleHtmlHit(hit)
+                        }
+                    )
                 }
             } detail: {
                 if let course = selectedCourse {
                     NavigationStack {
-                        CourseDetailView(courseID: course.id, store: library)
+                        CourseDetailView(
+                            courseID: course.id,
+                            store: library,
+                            initialHighlightedItemID: library.highlightedItem?.id,
+                            initialPendingPosition: library.pendingSearchPosition
+                        )
                     }
                 } else {
                     CourseSelectionPlaceholder()
@@ -76,14 +91,63 @@ struct RootView: View {
             .navigationSplitViewStyle(.balanced)
         } else {
             NavigationStack(path: $path) {
-                LibraryView { course in
-                    path.append(course)
-                }
+                LibraryView(
+                    onSelectCourse: { course in
+                        path.append(course)
+                    },
+                    onSelectSubtitle: { hit in
+                        handleSubtitleHit(hit)
+                    },
+                    onSelectHtml: { hit in
+                        handleHtmlHit(hit)
+                    }
+                )
                 .navigationDestination(for: Course.self) { course in
-                    CourseDetailView(courseID: course.id, store: library)
+                    CourseDetailView(
+                        courseID: course.id,
+                        store: library,
+                        initialHighlightedItemID: library.highlightedItem?.id,
+                        initialPendingPosition: library.pendingSearchPosition
+                    )
                 }
             }
         }
+    }
+
+    // MARK: - Search result routing
+
+    /// A subtitle/HTML tap shares the same code path as a course tap
+    /// but goes through a small "set the intent on the store" step
+    /// first, so the detail view knows to highlight the matching
+    /// lesson and show the "min 12:34" banner.
+    private func handleSubtitleHit(_ hit: SubtitleHit) {
+        let item = library.courses
+            .first(where: { $0.id == hit.course.id })?
+            .allItems
+            .first(where: { $0.relativePath == hit.itemRelativePath })
+        library.highlightedItem = item
+        library.pendingSearchPosition = .subtitle(
+            startSeconds: hit.startSeconds,
+            itemRelativePath: hit.itemRelativePath,
+            courseID: hit.course.id
+        )
+        selectedCourse = hit.course
+        path.append(hit.course)
+    }
+
+    private func handleHtmlHit(_ hit: HtmlHit) {
+        let item = library.courses
+            .first(where: { $0.id == hit.course.id })?
+            .allItems
+            .first(where: { $0.relativePath == hit.itemRelativePath })
+        library.highlightedItem = item
+        library.pendingSearchPosition = .html(
+            paragraphIndex: hit.paragraphIndex,
+            itemRelativePath: hit.itemRelativePath,
+            courseID: hit.course.id
+        )
+        selectedCourse = hit.course
+        path.append(hit.course)
     }
 }
 

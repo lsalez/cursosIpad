@@ -7,6 +7,10 @@
 // Tap on a lesson fires `onTapLesson(item)`. The parent
 // (`CourseDetailView`) is responsible for routing the tap to the
 // right viewer (or, for Fase 3, a "Próximamente" alert).
+//
+// `highlightedItemID` is the optional `CourseItem.id` to draw with
+// the search-hit background — used when the user got here by
+// tapping a subtitle/HTML search result.
 
 import Shared
 import SwiftUI
@@ -14,7 +18,20 @@ import SwiftUI
 struct CurriculumView: View {
     let course: Course
     let accent: Color
+    let highlightedItemID: UUID?
     let onTapLesson: (CourseItem) -> Void
+
+    init(
+        course: Course,
+        accent: Color,
+        highlightedItemID: UUID? = nil,
+        onTapLesson: @escaping (CourseItem) -> Void
+    ) {
+        self.course = course
+        self.accent = accent
+        self.highlightedItemID = highlightedItemID
+        self.onTapLesson = onTapLesson
+    }
 
     var body: some View {
         if course.modules.isEmpty {
@@ -26,6 +43,7 @@ struct CurriculumView: View {
                         module: module,
                         accent: accent,
                         lastViewedItemID: lastViewedItemID,
+                        highlightedItemID: highlightedItemID,
                         onTapLesson: onTapLesson
                     )
                 }

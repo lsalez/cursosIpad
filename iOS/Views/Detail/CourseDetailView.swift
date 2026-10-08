@@ -7,6 +7,9 @@
 //   * A segmented tab picker (Contenido / Descripción / Archivos) and
 //     the matching tab content (`CurriculumView`,
 //     `CourseDescriptionView`, `CourseFilesView`).
+//   * (Fase 4) `SearchPositionBanner` shown when the user got here
+//     by tapping a search result. The banner carries the intended
+//     position; the actual playback/scroll is wired up in Fase 6/8.
 //
 // On iPhone the layout is a single vertical `ScrollView` (hero on
 // top, tabs, content). On iPad it switches to an internal split: the
@@ -30,15 +33,26 @@ import SwiftUI
 struct CourseDetailView: View {
     let courseID: UUID
     let store: LibraryStore
+    let initialHighlightedItemID: UUID?
+    let initialPendingPosition: SearchPosition?
 
     @Environment(\.horizontalSizeClass) private var sizeClass
     @State private var selectedTab: DetailTab
     @State private var pendingLessonNotice: PendingLessonNotice?
+    @State private var pendingPosition: SearchPosition?
 
-    init(courseID: UUID, store: LibraryStore) {
+    init(
+        courseID: UUID,
+        store: LibraryStore,
+        initialHighlightedItemID: UUID? = nil,
+        initialPendingPosition: SearchPosition? = nil
+    ) {
         self.courseID = courseID
         self.store = store
+        self.initialHighlightedItemID = initialHighlightedItemID
+        self.initialPendingPosition = initialPendingPosition
         _selectedTab = State(initialValue: .content)
+        _pendingPosition = State(initialValue: initialPendingPosition)
     }
 
     /// The current `Course` from the store. Reading `store.courses`
@@ -72,6 +86,25 @@ struct CourseDetailView: View {
         .background(Color.appBackground.ignoresSafeArea())
         .navigationTitle(course?.title ?? "Curso")
         .navigationBarTitleDisplayMode(.inline)
+        // Pull the search intent from the store on appear. The store
+        // may have been set by `LibraryView` when the user tapped a
+        // result, or by `RootView` directly when the iPad split
+        // route doesn't go through the library.
+        .onAppear {
+            if let item = store.highlightedItem, item.id == courseID {
+                pendingPosition = store.pendingSearchPosition
+            } else if initialHighlightedItemID != nil {
+                pendingPosition = initialPendingPosition
+            }
+        }
+        .onDisappear {
+            // Clear the store-level intent so the same course opened
+            // normally later doesn't re-show the banner.
+            if store.highlightedItem?.id == courseID {
+                store.highlightedItem = nil
+                store.pendingSearchPosition = nil
+            }
+        }
         .alert(
             pendingLessonNotice?.title ?? "",
             isPresented: Binding(
@@ -91,6 +124,9 @@ struct CourseDetailView: View {
     private func iPhoneStack(course: Course) -> some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
+                if let pendingPosition {
+                    SearchPositionBanner(position: pendingPosition)
+                }
                 CourseHeroView(
                     course: course,
                     store: store,
@@ -111,13 +147,18 @@ struct CourseDetailView: View {
     private func iPadSplit(course: Course) -> some View {
         HStack(spacing: 0) {
             ScrollView {
-                CourseHeroView(
-                    course: course,
-                    store: store,
-                    accent: accent,
-                    onOpenLesson: handleOpenLesson,
-                    onMarkCompleted: handleMarkCompleted
-                )
+                VStack(alignment: .leading, spacing: 20) {
+                    if let pendingPosition {
+                        SearchPositionBanner(position: pendingPosition)
+                    }
+                    CourseHeroView(
+                        course: course,
+                        store: store,
+                        accent: accent,
+                        onOpenLesson: handleOpenLesson,
+                        onMarkCompleted: handleMarkCompleted
+                    )
+                }
                 .padding(20)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -184,6 +225,7 @@ struct CourseDetailView: View {
             CurriculumView(
                 course: course,
                 accent: accent,
+                highlightedItemID: initialHighlightedItemID,
                 onTapLesson: handleOpenLesson
             )
         case .description:
@@ -204,6 +246,10 @@ struct CourseDetailView: View {
     // MARK: - Actions
 
     private func handleOpenLesson(_ item: CourseItem) {
+        // If we got here from a search result, keep the position
+        // banner visible while the user explores the curriculum. The
+        // position is per-course, not per-item, so we don't clear
+        // it on a normal tap.
         let phase: String
         switch item.type {
         case .video: phase = "Fase 6"
