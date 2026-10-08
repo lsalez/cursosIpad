@@ -1,0 +1,439 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0B2A390FCC5B5B254AA8E704 /* CursosIpadMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB79334C67F08618166961B /* CursosIpadMacApp.swift */; };
+		3C33F37E89A9F2BE3D3FCEA8 /* Shared in Frameworks */ = {isa = PBXBuildFile; productRef = 5B4AA06957FA6BDDFDA5FF7B /* Shared */; };
+		697F374DA3A8E8365F13247D /* Shared in Frameworks */ = {isa = PBXBuildFile; productRef = 63AB7FC03545D42D12708026 /* Shared */; };
+		70A40ECB09806B5F9E350FEE /* CursosIpadApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D143650172A9765142D3E3A /* CursosIpadApp.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0D143650172A9765142D3E3A /* CursosIpadApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CursosIpadApp.swift; sourceTree = "<group>"; };
+		0EB79334C67F08618166961B /* CursosIpadMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CursosIpadMacApp.swift; sourceTree = "<group>"; };
+		253A68D3133E014B411561B8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		351FC477AC44CADA27D1A000 /* CursosIpadMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CursosIpadMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3C09071BDDE6DB1F3DEB5474 /* CursosIpad.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = CursosIpad.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8A35C371F8F3E90F66712DDA /* Shared */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Shared; path = Shared; sourceTree = SOURCE_ROOT; };
+		8BAC86969C10E234997C39C6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		93597748AADD74C06494A6BC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				697F374DA3A8E8365F13247D /* Shared in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C513BE77CFF0CA31B31860EF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3C33F37E89A9F2BE3D3FCEA8 /* Shared in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		32179ECE22E6855DF526748C /* macOS */ = {
+			isa = PBXGroup;
+			children = (
+				0EB79334C67F08618166961B /* CursosIpadMacApp.swift */,
+				8BAC86969C10E234997C39C6 /* Info.plist */,
+			);
+			path = macOS;
+			sourceTree = "<group>";
+		};
+		5BE392F5C518F42A8C0F3266 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				8A35C371F8F3E90F66712DDA /* Shared */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+		BBE3862821A1ED6B41635924 = {
+			isa = PBXGroup;
+			children = (
+				CB4B19CCC85D6A3361A7FB45 /* iOS */,
+				32179ECE22E6855DF526748C /* macOS */,
+				5BE392F5C518F42A8C0F3266 /* Packages */,
+				CEF42C1D55599742ED4285A1 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		CB4B19CCC85D6A3361A7FB45 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				0D143650172A9765142D3E3A /* CursosIpadApp.swift */,
+				253A68D3133E014B411561B8 /* Info.plist */,
+			);
+			path = iOS;
+			sourceTree = "<group>";
+		};
+		CEF42C1D55599742ED4285A1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3C09071BDDE6DB1F3DEB5474 /* CursosIpad.app */,
+				351FC477AC44CADA27D1A000 /* CursosIpadMac.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		55A6B771674B736DF873BD86 /* CursosIpad */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4F958A5F98F41923327083A7 /* Build configuration list for PBXNativeTarget "CursosIpad" */;
+			buildPhases = (
+				ACEBFF11641D6314BFB84B38 /* Sources */,
+				C513BE77CFF0CA31B31860EF /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CursosIpad;
+			packageProductDependencies = (
+				5B4AA06957FA6BDDFDA5FF7B /* Shared */,
+			);
+			productName = CursosIpad;
+			productReference = 3C09071BDDE6DB1F3DEB5474 /* CursosIpad.app */;
+			productType = "com.apple.product-type.application";
+		};
+		8E81DB7FD8A46A527BDECD7A /* CursosIpadMac */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 34C8A9CB3FA49C31DF60A758 /* Build configuration list for PBXNativeTarget "CursosIpadMac" */;
+			buildPhases = (
+				28C67D2CBBECCA43122C1C94 /* Sources */,
+				93597748AADD74C06494A6BC /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CursosIpadMac;
+			packageProductDependencies = (
+				63AB7FC03545D42D12708026 /* Shared */,
+			);
+			productName = CursosIpadMac;
+			productReference = 351FC477AC44CADA27D1A000 /* CursosIpadMac.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		81FCAE635FCE6560CB5E1D34 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					55A6B771674B736DF873BD86 = {
+						DevelopmentTeam = "";
+					};
+					8E81DB7FD8A46A527BDECD7A = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = EAA7C7A2D192E8ADE932A75B /* Build configuration list for PBXProject "CursosIpad" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = BBE3862821A1ED6B41635924;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				C8BD7FBB596C0EABB1D1616C /* XCLocalSwiftPackageReference "Shared" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = CEF42C1D55599742ED4285A1 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				55A6B771674B736DF873BD86 /* CursosIpad */,
+				8E81DB7FD8A46A527BDECD7A /* CursosIpadMac */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		28C67D2CBBECCA43122C1C94 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0B2A390FCC5B5B254AA8E704 /* CursosIpadMacApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ACEBFF11641D6314BFB84B38 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				70A40ECB09806B5F9E350FEE /* CursosIpadApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		23247411DE4B87794804A202 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = macOS/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = mx.salez.cursosipad.macos;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		51A443493E08B3DC63228F77 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 0.0.1;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = minimal;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		68D2A202963102F1E9A5E23C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = macOS/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = mx.salez.cursosipad.macos;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		80FA60B87B56812D0633465D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 0.0.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_STRICT_CONCURRENCY = minimal;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		852C1C28C03F44ED70E32A38 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = iOS/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = mx.salez.cursosipad;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A1DED49A9F8297CBFC721304 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = iOS/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = mx.salez.cursosipad;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		34C8A9CB3FA49C31DF60A758 /* Build configuration list for PBXNativeTarget "CursosIpadMac" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				68D2A202963102F1E9A5E23C /* Debug */,
+				23247411DE4B87794804A202 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		4F958A5F98F41923327083A7 /* Build configuration list for PBXNativeTarget "CursosIpad" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				852C1C28C03F44ED70E32A38 /* Debug */,
+				A1DED49A9F8297CBFC721304 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		EAA7C7A2D192E8ADE932A75B /* Build configuration list for PBXProject "CursosIpad" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				51A443493E08B3DC63228F77 /* Debug */,
+				80FA60B87B56812D0633465D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		C8BD7FBB596C0EABB1D1616C /* XCLocalSwiftPackageReference "Shared" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Shared;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		5B4AA06957FA6BDDFDA5FF7B /* Shared */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Shared;
+		};
+		63AB7FC03545D42D12708026 /* Shared */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Shared;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 81FCAE635FCE6560CB5E1D34 /* Project object */;
+}

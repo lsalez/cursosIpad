@@ -3,9 +3,9 @@
 App nativa para iPad/iPhone + app companion en Mac para copiar, organizar y
 consumir cursos con seguimiento de progreso.
 
-> **Status:** en planificación. Aún no hay código fuente — ver
-> [`plan.md`](./plan.md) para el diseño funcional completo y el plan de
-> implementación por fases.
+> **Status:** Fase 0 (Andamiaje) completa. Las apps iOS y macOS compilan y
+> abren un "Hola mundo". Ver [`plan.md`](./plan.md) para el diseño funcional
+> completo y el plan de implementación por fases.
 
 ## ¿Qué hace?
 
@@ -30,33 +30,52 @@ exponer la carpeta de cursos de la app iOS en la app Archivos.
 cursosIpad/                              ← monorepo
 ├── README.md                            ← este archivo
 ├── plan.md                              ← diseño + fases de implementación
-├── .gitignore
-└── (próximamente) CursosIpad.xcodeproj ← Fase 0
-    ├── iOS/                             ← target iOS
-    ├── macOS/                           ← target macOS
-    └── Shared/                          ← Swift Package con modelos comunes
+├── project.yml                          ← spec de xcodegen (fuente de verdad)
+├── CursosIpad.xcodeproj/                ← generado por xcodegen desde project.yml
+├── iOS/                                 ← target iOS (CursosIpad)
+├── macOS/                               ← target macOS (CursosIpadMac)
+└── Shared/                              ← Swift Package local con modelos comunes
+    └── Sources/Shared/
+        ├── Models/                      ← Fase 1
+        ├── Sidecar/                     ← Fase 5
+        └── TransferProtocol/            ← Fase 11
 ```
 
 ## Requisitos
 
 - **macOS** 14 (Sonoma) o superior.
 - **Xcode** 15 o superior (Swift 5.9, SwiftUI iOS 17+ / macOS 14+).
+- **[xcodegen](https://github.com/yonaskolb/XcodeGen)** 2.45 o superior
+  (opcional — solo si quieres regenerar el `.xcodeproj` desde
+  `project.yml`; el `.xcodeproj` ya viene commiteado).
 - **Dispositivo Apple** (iPhone o iPad) para sideload, o simulador para
   pruebas rápidas.
 - **Cuenta de Apple Developer** (opcional — sin ella, el sideload expira a
   los 7 días).
 
-## Cómo correr (cuando exista el proyecto Xcode)
-
-Aún no hay proyecto — eso es la **Fase 0** del plan. Cuando exista:
+## Cómo correr
 
 1. Abrir `CursosIpad.xcodeproj` en Xcode.
-2. Seleccionar el target iPad o iPhone físico (o simulador).
-3. Build & Run (`⌘R`).
-4. Si es dispositivo físico y no tienes cuenta de developer, firmar con
+2. Seleccionar el scheme `CursosIpad` (iOS) o `CursosIpadMac` (macOS).
+3. Elegir destino: un iPad / iPhone físico, un simulador o "My Mac".
+4. Build & Run (`⌘R`).
+5. Si es dispositivo físico y no tienes cuenta de developer, firmar con
    tu Apple ID personal: Xcode → Settings → Accounts → "+" Apple ID.
 
-Para la app macOS companion: seleccionar el target macOS y `⌘R`.
+La app iOS actualmente muestra un placeholder "cursosIpad / Fase 0 —
+Andamiaje". Lo mismo la app macOS. La lógica de producto entra a partir
+de la Fase 1.
+
+### Regenerar el proyecto (opcional)
+
+El `.xcodeproj` está commiteado. Si modificas `project.yml` o
+`iOS/` / `macOS` / `Shared/` en su estructura, regenera con:
+
+```sh
+xcodegen generate
+```
+
+Si no tienes xcodegen: `brew install xcodegen`.
 
 ## Stack técnico (resumen)
 

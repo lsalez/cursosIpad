@@ -29,7 +29,7 @@ DerivedData/
 !default.perspectivev3
 xcuserdata/
 *.xccheckout
-*.xcscheme
+xcuserdata/**/xcschemes/*.xcscheme
 *.hmap
 
 # Swift Package Manager
