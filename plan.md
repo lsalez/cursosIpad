@@ -10,13 +10,13 @@ consumir cursos con seguimiento de progreso.
 
 ## Progreso
 
-**Fase actual:** Fase 2 — Biblioteca iOS · **% global:** 14% · **Última act.:** 2026-10-08
+**Fase actual:** Fase 3 — Detalle del curso · **% global:** 21% · **Última act.:** 2026-10-08
 
 | # | Fase | Estado | Cerrada |
 |---|------|--------|---------|
 | 0 | Andamiaje | ✅ | 2026-10-08 |
 | 1 | Indexador de cursos (iOS) | ✅ | 2026-10-08 |
-| 2 | Biblioteca iOS | ⬜ | — |
+| 2 | Biblioteca iOS | ✅ | 2026-10-08 |
 | 3 | Detalle del curso | ⬜ | — |
 | 4 | Búsqueda full-text | ⬜ | — |
 | 5 | Sidecar + progreso | ⬜ | — |
@@ -977,22 +977,22 @@ insertó como Fase 3 al detectar que faltaba cubrirla explícitamente.
 
 **Checklist:**
 
-- [ ] `LibraryView` con grid (2 columnas iPhone, 3–4 iPad)
-- [ ] Tarjeta de curso:
-  - [ ] Cover 16:9 con esquinas redondeadas 12 pt (placeholder si no hay)
-  - [ ] Título (2 líneas, truncado)
-  - [ ] Barra de progreso fina
-  - [ ] Texto "X de Y lecciones • Z%"
-  - [ ] Micro-badge "Continuar ▶" si tiene último visto
-- [ ] Chips horizontales de tags (scroll horizontal, "Todos" + únicos)
-- [ ] Barra `.searchable` con búsqueda por nombre (case-insensitive, en memoria)
-- [ ] Menú de orden (recientes / A–Z / % avance)
-- [ ] Toggle grid/lista
-- [ ] Empty state con copy en español ("Aún no tienes cursos. Agrega desde tu Mac o por USB.")
-- [ ] Botón flotante "+" con menú (Recibir por WiFi / Mostrar en Archivos)
-- [ ] iPad: `NavigationSplitView` con biblioteca a la izquierda
-- [ ] Tokens `Color` de la paleta SPID (ver §14.1.1) implementados como extensión
-- [ ] Extracción de color dominante de cover (para CTA dinámico)
+- [x] `LibraryView` con grid (2 columnas iPhone, 3–4 iPad)
+- [x] Tarjeta de curso:
+  - [x] Cover 16:9 con esquinas redondeadas 12 pt (placeholder si no hay)
+  - [x] Título (2 líneas, truncado)
+  - [x] Barra de progreso fina
+  - [x] Texto "X de Y lecciones • Z%"
+  - [x] Micro-badge "Continuar ▶" si tiene último visto
+- [x] Chips horizontales de tags (scroll horizontal, "Todos" + únicos)
+- [x] Barra `.searchable` con búsqueda por nombre (case-insensitive, en memoria)
+- [x] Menú de orden (recientes / A–Z / % avance)
+- [x] Toggle grid/lista
+- [x] Empty state con copy en español ("Aún no tienes cursos. Agrega desde tu Mac o por USB.")
+- [x] Botón flotante "+" con menú (Recibir por WiFi / Mostrar en Archivos)
+- [x] iPad: `NavigationSplitView` con biblioteca a la izquierda
+- [x] Tokens `Color` de la paleta SPID (ver §14.1.1) implementados como extensión
+- [x] Extracción de color dominante de cover (para CTA dinámico)
 
 **Entregable:** biblioteca bonita que lista cursos reales con grid, búsqueda, filtros y toggle de tema.
 
