@@ -198,13 +198,18 @@ final class LibraryStore: ObservableObject {
     /// the rest of the store, so concurrent writers (5s timer +
     /// pause flush + mark-completed from another call site) serialize
     /// through the `SidecarWriter` actor and the last snapshot wins.
+    ///
+    /// For PDFs, the per-page writer (Fase 7's `PDFViewerView`) passes
+    /// `lastPage` instead of `positionSeconds`; both are nil-defaulted
+    /// so callers can't accidentally clobber the other field.
     func updateItemProgress(
         courseID: UUID,
         itemRelativePath: String,
         positionSeconds: Double? = nil,
         lastViewedAt: Date? = nil,
         isCompleted: Bool? = nil,
-        completionMarkedAt: Date? = nil
+        completionMarkedAt: Date? = nil,
+        lastPage: Int? = nil
     ) {
         guard let index = courses.firstIndex(where: { $0.id == courseID }) else {
             return
@@ -217,6 +222,7 @@ final class LibraryStore: ObservableObject {
             {
                 var item = updated.modules[moduleIndex].items[itemIndex]
                 if let v = positionSeconds { item.progress.positionSeconds = v }
+                if let v = lastPage { item.progress.lastPage = v }
                 if let v = lastViewedAt { item.progress.lastViewedAt = v }
                 if let v = isCompleted { item.progress.isCompleted = v }
                 if let v = completionMarkedAt { item.progress.completionMarkedAt = v }

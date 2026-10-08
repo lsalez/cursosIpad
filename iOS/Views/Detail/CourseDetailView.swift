@@ -183,27 +183,23 @@ struct CourseDetailView: View {
             if let course {
                 if let lesson = selectedLesson {
                     // Lesson view — replaces the normal detail chrome
-                    // when a video lesson is being watched. The
-                    // `.id(lesson.id)` is **critical**: it forces
-                    // SwiftUI to reconstruct this view (and thereby
-                    // the underlying `AVPlayer`) on every lesson swap
-                    // — without it the player would silently keep
-                    // rendering the old lesson's URL.
-                    VideoPlayerView(
-                        course: course,
-                        item: lesson,
-                        initialStartSeconds: pendingPosition?.startSecondsForVideo,
-                        onDismiss: {
-                            selectedLesson = nil
-                        },
-                        onSelectLesson: { item in
-                            handleOpenLesson(item)
-                        },
-                        onPositionConsumed: {
-                            consumePendingPosition()
-                        }
-                    )
-                    .id(lesson.id)
+                    // when a lesson is being viewed. The dispatch by
+                    // `lesson.type` lives in `lessonView(course:lesson:)`
+                    // below as a separate computed property; the
+                    // compiler can't type-check a large `switch` in
+                    // a ViewBuilder inline, so we extract it.
+                    //
+                    // **The `.id(lesson.id)` MUST live outside the
+                    // `Group`.** It forces full SwiftUI
+                    // reconstruction on every lesson swap, which is
+                    // what triggers `dismantleUIViewController` (video)
+                    // and `dismantleUIView` (PDF) on the old viewer
+                    // before the new one mounts. Without it, a swap
+                    // PDF-A → PDF-B would re-use the same `PDFView`
+                    // identity and the old `PDFDocument` would stay
+                    // attached in memory until the next `go(to:)`.
+                    lessonView(course: course, lesson: lesson)
+                        .id(lesson.id)
                 } else if sizeClass == .regular {
                     iPadSplit(course: course)
                 } else {
@@ -259,6 +255,44 @@ struct CourseDetailView: View {
         }
     }
 
+    // MARK: - Lesson dispatch (video / PDF / HTML)
+
+    /// Dispatches to the right viewer per `lesson.type`. Extracted
+    /// from `body` because the compiler can't type-check a large
+    /// `switch` in a `ViewBuilder` inline — that's the "expression
+    /// too complex" error that bites every SwiftUI project once a
+    /// viewer-dispatch `switch` grows past ~3 cases with non-trivial
+    /// view arguments.
+    ///
+    /// HTML stays as an empty branch for now (Fase 8 — the
+    /// "Próximamente" alert is raised in `handleOpenLesson` until
+    /// then).
+    @ViewBuilder
+    private func lessonView(course: Course, lesson: CourseItem) -> some View {
+        switch lesson.type {
+        case .video:
+            VideoPlayerView(
+                course: course,
+                item: lesson,
+                initialStartSeconds: pendingPosition?.startSecondsForVideo,
+                onDismiss: { selectedLesson = nil },
+                onSelectLesson: handleOpenLesson,
+                onPositionConsumed: consumePendingPosition
+            )
+        case .pdf:
+            PDFViewerView(
+                course: course,
+                item: lesson,
+                onDismiss: { selectedLesson = nil },
+                onSelectLesson: handleOpenLesson
+            )
+        case .html:
+            // Fase 8 — branch stays empty; the alert in
+            // `handleOpenLesson` covers HTML until then.
+            EmptyView()
+        }
+    }
+
     // MARK: - Tab content
 
     @ViewBuilder
@@ -291,10 +325,10 @@ struct CourseDetailView: View {
     // MARK: - Actions
 
     /// Tap on a lesson in the curriculum, the files tab, or the iPad
-    /// split's curriculum column. Video lessons get pushed /
-    /// swapped into the player; PDF / HTML visors are still pending
-    /// (Fase 7 / 8), so we surface the same "Próximamente" alert
-    /// they used before Fase 6.
+    /// split's curriculum column. Video and PDF lessons get pushed /
+    /// swapped into their respective viewers; HTML is still pending
+    /// (Fase 8), so we surface the same "Próximamente" alert it
+    /// used before Fase 7.
     private func handleOpenLesson(_ item: CourseItem) {
         switch item.type {
         case .video:
@@ -305,10 +339,11 @@ struct CourseDetailView: View {
             // `consumePendingPosition`.
             selectedLesson = item
         case .pdf:
-            pendingLessonNotice = PendingLessonNotice(
-                title: "Próximamente",
-                message: "El visor de PDF llega en la Fase 7. Lección: \(item.title)."
-            )
+            // Same shape as the video branch. `PDFViewerView` reads
+            // `item.progress.lastPage` directly for the resume seek;
+            // no pending-position plumbing because PDFs are not in
+            // the FTS5 search index (plan §2 #9).
+            selectedLesson = item
         case .html:
             pendingLessonNotice = PendingLessonNotice(
                 title: "Próximamente",
