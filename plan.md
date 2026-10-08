@@ -930,21 +930,21 @@ insertó como Fase 3 al detectar que faltaba cubrirla explícitamente.
 
 **Checklist:**
 
-- [ ] Crear proyecto Xcode `CursosIpad.xcodeproj` con:
-  - [ ] Target iOS app (`CursosIpad`)
-  - [ ] Target macOS app (`CursosIpadMac`)
-  - [ ] Local Swift Package `Shared` (modelos compartidos)
-- [ ] Configurar `Info.plist` iOS:
-  - [ ] `UIFileSharingEnabled = YES`
-  - [ ] `LSSupportsOpeningDocumentsInPlace = YES`
-  - [ ] `NSLocalNetworkUsageDescription`
-  - [ ] `NSBonjourServices` con `_cursosipad._tcp`
-  - [ ] `UIBackgroundModes` incluye `audio`
-- [ ] Configurar `Info.plist` macOS (Bonjour + local network)
-- [ ] App iOS arranca en simulador con pantalla vacía
-- [ ] App macOS arranca con pantalla vacía
-- [ ] `.gitignore` (excluir `xcuserdata`, `DerivedData`, `.build`, `.swiftpm`)
-- [ ] `README.md` inicial con instrucciones de build (sideload con Xcode)
+- [x] Crear proyecto Xcode `CursosIpad.xcodeproj` con:
+  - [x] Target iOS app (`CursosIpad`)
+  - [x] Target macOS app (`CursosIpadMac`)
+  - [x] Local Swift Package `Shared` (modelos compartidos)
+- [x] Configurar `Info.plist` iOS:
+  - [x] `UIFileSharingEnabled = YES`
+  - [x] `LSSupportsOpeningDocumentsInPlace = YES`
+  - [x] `NSLocalNetworkUsageDescription`
+  - [x] `NSBonjourServices` con `_cursosipad._tcp`
+  - [x] `UIBackgroundModes` incluye `audio`
+- [x] Configurar `Info.plist` macOS (Bonjour + local network)
+- [x] App iOS arranca en simulador con pantalla vacía
+- [x] App macOS arranca con pantalla vacía
+- [x] `.gitignore` (excluir `xcuserdata`, `DerivedData`, `.build`, `.swiftpm`)
+- [x] `README.md` inicial con instrucciones de build (sideload con Xcode)
 
 **Entregable:** proyecto que compila y abre "Hola mundo" en iOS y macOS.
 
