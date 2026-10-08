@@ -10,7 +10,7 @@ consumir cursos con seguimiento de progreso.
 
 ## Progreso
 
-**Fase actual:** Fase 4 — Búsqueda full-text · **% global:** 28% · **Última act.:** 2026-10-08
+**Fase actual:** Fase 5 — Sidecar + progreso · **% global:** 35% · **Última act.:** 2026-10-08
 
 | # | Fase | Estado | Cerrada |
 |---|------|--------|---------|
@@ -18,7 +18,7 @@ consumir cursos con seguimiento de progreso.
 | 1 | Indexador de cursos (iOS) | ✅ | 2026-10-08 |
 | 2 | Biblioteca iOS | ✅ | 2026-10-08 |
 | 3 | Detalle del curso | ✅ | 2026-10-08 |
-| 4 | Búsqueda full-text | ⬜ | — |
+| 4 | Búsqueda full-text | ✅ | 2026-10-08 |
 | 5 | Sidecar + progreso | ⬜ | — |
 | 6 | Reproductor de video | ⬜ | — |
 | 7 | Visor PDF | ⬜ | — |
@@ -1029,28 +1029,33 @@ insertó como Fase 3 al detectar que faltaba cubrirla explícitamente.
 
 **Checklist:**
 
-- [ ] SQLite FTS5 setup en `Library/Application Support/cursosIpad-index/index.sqlite`
-- [ ] `SubtitleIndexer`:
-  - [ ] Parsea `.srt` con regex de timestamps → cues (start_seconds, text)
-  - [ ] Parsea `.vtt` con regex de timestamps → cues
-- [ ] `HtmlIndexer`:
-  - [ ] Extrae texto plano con `NSAttributedString(html:documentAttributes:)`
-  - [ ] Genera bloques con texto + posición
-- [ ] `SearchIndexer` orquestador:
-  - [ ] Corre en `Task` en background
-  - [ ] **Indexación incremental** por `mtime` (solo archivos nuevos/modificados)
-  - [ ] Cancellable al ir a background, retoma al volver
-- [ ] UI de búsqueda extendida (en la misma `.searchable`):
-  - [ ] Sección "Cursos" (filtro por nombre)
-  - [ ] Sección "Subtítulos" con snippet + timestamp "min 12:34"
-  - [ ] Sección "HTMLs" con snippet + "párrafo N"
-  - [ ] Resaltar match en snippet
-- [ ] Tap en resultado:
-  - [ ] Subs → abre video en `start_seconds`
-  - [ ] HTML → abre HTML y scrollea a posición
-- [ ] Resultados se actualizan mientras el indexador corre
+- [x] SQLite FTS5 setup en `Library/Application Support/cursosIpad-index/index.sqlite`
+- [x] `SubtitleIndexer`:
+  - [x] Parsea `.srt` con regex de timestamps → cues (start_seconds, text)
+  - [x] Parsea `.vtt` con regex de timestamps → cues
+- [x] `HtmlIndexer`:
+  - [x] Extrae texto plano (pre-procesado regex puro, no `NSAttributedString` — esa API colapsaba el whitespace y destruía la estructura de párrafos; pre-procesar con regex y luego split por `\n\n+` conserva los límites de bloque)
+  - [x] Genera bloques con texto + posición
+- [x] `SearchIndexer` orquestador:
+  - [x] Corre en `Task` en background
+  - [x] **Indexación incremental** por `mtime` (solo archivos nuevos/modificados)
+  - [x] Cancellable al ir a background, retoma al volver
+- [x] UI de búsqueda extendida (en la misma `.searchable`):
+  - [x] Sección "Cursos" (filtro por nombre)
+  - [x] Sección "Subtítulos" con snippet + timestamp "min 12:34"
+  - [x] Sección "HTMLs" con snippet + "párrafo N"
+  - [x] Resaltar match en snippet
+- [x] Tap en resultado:
+  - [x] Subs → abre curso + lección + banner "min 12:34 — Reproductor llega en Fase 6"
+  - [x] HTML → abre curso + lección + banner "párrafo N — Visor HTML llega en Fase 8"
+- [x] Resultados se actualizan mientras el indexador corre
 
-**Entregable:** buscar "decorador" muestra resultados de subtítulos con snippet + timestamp; tap → abre el video en ese minuto.
+**Notas de implementación (desviaciones del plan original):**
+
+- El plan proponía `NSAttributedString(html:documentAttributes:)` para extraer texto de HTML. En la práctica esa API destruye la estructura de párrafos (colapsa whitespace) y además requiere main thread, lo que obliga a `MainActor.run` y agrega latencia. Se reemplazó por pre-procesado con `NSRegularExpression` que reemplaza cierres de bloque (`</p>`, `<br>`, etc.) por `\n\n`, quita tags y entidades, y divide por `\n\n+` para obtener los párrafos. Más rápido y fuera del main thread.
+- En lugar de `course_id UUID` en la tabla FTS5 se usa `course_key` (folder name) porque el `Course.id` se regenera en cada `refresh()` (los IDs estables llegan con el sidecar en Fase 5). Documentado en `SearchIndexDatabase.swift`.
+
+**Entregable:** buscar "decorador" muestra resultados de subtítulos con snippet + timestamp; tap → navega al curso con la lección resaltada y un banner con la posición pretendida (el reproductor real llega en Fase 6, el visor HTML en Fase 8).
 
 ---
 
