@@ -10,11 +10,11 @@ consumir cursos con seguimiento de progreso.
 
 ## Progreso
 
-**Fase actual:** Fase 0 — Andamiaje · **% global:** 0% · **Última act.:** 2026-10-08
+**Fase actual:** Fase 1 — Indexador de cursos (iOS) · **% global:** 7% · **Última act.:** 2026-10-08
 
 | # | Fase | Estado | Cerrada |
 |---|------|--------|---------|
-| 0 | Andamiaje | ⬜ | — |
+| 0 | Andamiaje | ✅ | 2026-10-08 |
 | 1 | Indexador de cursos (iOS) | ⬜ | — |
 | 2 | Biblioteca iOS | ⬜ | — |
 | 3 | Detalle del curso | ⬜ | — |
