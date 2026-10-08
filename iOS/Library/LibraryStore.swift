@@ -21,6 +21,21 @@
 //     shows a banner with the intended position, and clears them
 //     again so the next normal opening of the same course doesn't
 //     re-trigger the banner.
+//
+// Fase 6 additions:
+//   * `itemURL(for:item:)` for video/PDF/HTML lesson resolution.
+//   * `updateItemProgress(...field-keyed...)` for the periodic
+//     position writer in `VideoPlayerView` (and the future PDF/HTML
+//     visors). Each parameter defaults to `nil` so callers can't
+//     accidentally wipe fields they didn't intend to — see the
+//     docstring for the rationale.
+//   * `markItemCompleted` as the single entry point for marking a
+//     lesson done. Used by both the manual button and the future
+//     auto-complete toggle. `markCourseCompleted` now iterates by
+//     calling `markItemCompleted` so there's exactly one path.
+//   * `lastViewedAt` is intentionally NOT touched by
+//     `markItemCompleted` — that's owned by the periodic writer,
+//     which already updates it every flush.
 
 import Combine
 import Foundation
@@ -142,6 +157,16 @@ final class LibraryStore: ObservableObject {
         return courseDir.appendingPathComponent(coverFileName)
     }
 
+    /// Absolute URL for a single lesson, mirroring `coverURL(for:)`.
+    /// Returns `nil` only if the Documents directory can't be located
+    /// (in practice never on iOS) or the course's folder isn't on
+    /// disk anymore. The visors (video, PDF, HTML) call this to know
+    /// where to open the file.
+    func itemURL(for course: Course, item: CourseItem) -> URL? {
+        guard let dir = courseDirectoryURL(for: course) else { return nil }
+        return dir.appendingPathComponent(item.relativePath, isDirectory: false)
+    }
+
     /// Dominant color of the course's cover, ready to be used as the
     /// CTA accent (or `.appAccentFallback` if we can't pull a useful
     /// color out of it). Cached per cover URL.
@@ -157,16 +182,84 @@ final class LibraryStore: ObservableObject {
         return color
     }
 
+    // MARK: - Per-item progress (Fase 6+)
+
+    /// Update a subset of an item's `ItemProgress` in-memory and
+    /// persist the sidecar. Each argument defaults to `nil` meaning
+    /// "leave this field unchanged". The field-keyed shape is
+    /// deliberate: a `transform: (ItemProgress) -> ItemProgress`
+    /// closure would invite callers to write
+    /// `ItemProgress(positionSeconds: $0.positionSeconds)` and forget
+    /// to copy `isCompleted` / `completionMarkedAt` / `lastViewedAt`.
+    /// With this API the worst case is "we forgot to write this
+    /// field", not "we wiped a field we never read".
+    ///
+    /// Persistence goes through the same `persistSidecar` path as
+    /// the rest of the store, so concurrent writers (5s timer +
+    /// pause flush + mark-completed from another call site) serialize
+    /// through the `SidecarWriter` actor and the last snapshot wins.
+    func updateItemProgress(
+        courseID: UUID,
+        itemRelativePath: String,
+        positionSeconds: Double? = nil,
+        lastViewedAt: Date? = nil,
+        isCompleted: Bool? = nil,
+        completionMarkedAt: Date? = nil
+    ) {
+        guard let index = courses.firstIndex(where: { $0.id == courseID }) else {
+            return
+        }
+        var updated = courses[index]
+        var didMutate = false
+        for moduleIndex in updated.modules.indices {
+            for itemIndex in updated.modules[moduleIndex].items.indices
+            where updated.modules[moduleIndex].items[itemIndex].relativePath == itemRelativePath
+            {
+                var item = updated.modules[moduleIndex].items[itemIndex]
+                if let v = positionSeconds { item.progress.positionSeconds = v }
+                if let v = lastViewedAt { item.progress.lastViewedAt = v }
+                if let v = isCompleted { item.progress.isCompleted = v }
+                if let v = completionMarkedAt { item.progress.completionMarkedAt = v }
+                updated.modules[moduleIndex].items[itemIndex] = item
+                didMutate = true
+                break  // unique path within a course
+            }
+        }
+        guard didMutate else { return }
+        courses[index] = updated
+        persistSidecar(for: updated)
+    }
+
+    /// Single entry point used by both the manual "Marcar como
+    /// visto" button and the future auto-complete toggle. Sets
+    /// `isCompleted = true` and stamps `completionMarkedAt = now`
+    /// without touching `lastViewedAt` — that's the periodic
+    /// writer's responsibility, and touching it here would corrupt
+    /// the "most recently viewed" sort key.
+    func markItemCompleted(courseID: UUID, itemRelativePath: String) {
+        updateItemProgress(
+            courseID: courseID,
+            itemRelativePath: itemRelativePath,
+            isCompleted: true,
+            completionMarkedAt: Date()
+        )
+    }
+
     // MARK: - Course completion
 
     /// Mark every item in the course as completed. Used by the
     /// "Marcar curso como completado" button on the detail hero.
+    /// Does a single in-memory mutation followed by a single sidecar
+    /// write — batched, not per-item — so the SidecarWriter queue
+    /// doesn't get 200 entries for a 200-item course.
     ///
-    /// Fase 5 wiring: after the in-memory mutation, the new state is
-    /// persisted to `.cursosIpad.json` in the course folder. The
-    /// write is off-main (`Task.detached`) and serialized by the
-    /// `SidecarWriter` actor; failures are logged, never propagated,
-    /// so a disk hiccup never blocks the UI.
+    /// `markItemCompleted` is the *per-item* entry point (used by
+    /// the "Marcar como visto" button on the player chrome and the
+    /// future auto-complete toggle). They're separate paths on
+    /// purpose; the per-item path serializes one write at a time
+    /// alongside ongoing position updates from the player, and the
+    /// batch path here treats the whole course as one logical
+    /// operation.
     func markCourseCompleted(courseID: UUID) {
         guard let index = courses.firstIndex(where: { $0.id == courseID }) else {
             return

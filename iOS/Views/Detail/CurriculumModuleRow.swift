@@ -20,6 +20,7 @@ struct CurriculumModuleRow: View {
     let accent: Color
     let lastViewedItemID: UUID?
     let highlightedItemID: UUID?
+    let courseDirectory: URL?
     let onTapLesson: (CourseItem) -> Void
 
     @State private var isExpanded: Bool = true
@@ -29,12 +30,14 @@ struct CurriculumModuleRow: View {
         accent: Color,
         lastViewedItemID: UUID? = nil,
         highlightedItemID: UUID? = nil,
+        courseDirectory: URL? = nil,
         onTapLesson: @escaping (CourseItem) -> Void
     ) {
         self.module = module
         self.accent = accent
         self.lastViewedItemID = lastViewedItemID
         self.highlightedItemID = highlightedItemID
+        self.courseDirectory = courseDirectory
         self.onTapLesson = onTapLesson
     }
 
@@ -52,6 +55,7 @@ struct CurriculumModuleRow: View {
                                 isLastViewed: item.id == lastViewedItemID,
                                 isHighlighted: item.id == highlightedItemID,
                                 accent: accent,
+                                courseDirectory: courseDirectory,
                                 onTap: { onTapLesson(item) }
                             )
                             if item.id != module.items.last?.id {

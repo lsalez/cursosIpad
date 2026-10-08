@@ -6,11 +6,16 @@
 //
 // Tap on a lesson fires `onTapLesson(item)`. The parent
 // (`CourseDetailView`) is responsible for routing the tap to the
-// right viewer (or, for Fase 3, a "Próximamente" alert).
+// right viewer (video: the player; PDF/HTML still alert).
 //
 // `highlightedItemID` is the optional `CourseItem.id` to draw with
 // the search-hit background — used when the user got here by
 // tapping a subtitle/HTML search result.
+//
+// Fase 6 adds `courseDirectory: URL?` so each lesson row can resolve
+// its own video thumbnail via `VideoThumbnailLoader`. It's threaded
+// from the parent (`CourseDetailView` via `LibraryStore.courseDirectoryURL`)
+// — the curriculum doesn't know where to look otherwise.
 
 import Shared
 import SwiftUI
@@ -19,17 +24,20 @@ struct CurriculumView: View {
     let course: Course
     let accent: Color
     let highlightedItemID: UUID?
+    let courseDirectory: URL?
     let onTapLesson: (CourseItem) -> Void
 
     init(
         course: Course,
         accent: Color,
         highlightedItemID: UUID? = nil,
+        courseDirectory: URL? = nil,
         onTapLesson: @escaping (CourseItem) -> Void
     ) {
         self.course = course
         self.accent = accent
         self.highlightedItemID = highlightedItemID
+        self.courseDirectory = courseDirectory
         self.onTapLesson = onTapLesson
     }
 
@@ -44,6 +52,7 @@ struct CurriculumView: View {
                         accent: accent,
                         lastViewedItemID: lastViewedItemID,
                         highlightedItemID: highlightedItemID,
+                        courseDirectory: courseDirectory,
                         onTapLesson: onTapLesson
                     )
                 }

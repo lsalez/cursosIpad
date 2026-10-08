@@ -61,7 +61,7 @@ struct SearchPositionBanner: View {
     private var detail: String {
         switch position {
         case .subtitle:
-            return "Encontraste este momento buscando en los subtítulos. El reproductor con reanudar en posición llega en la Fase 6; por ahora la lección está marcada para que la encuentres rápido."
+            return "Encontraste este momento buscando en los subtítulos. Toca la lección de abajo para abrir el reproductor en este punto."
         case .html:
             return "Encontraste este párrafo buscando en los archivos HTML. El visor con scroll a párrafo llega en la Fase 8; por ahora la lección está marcada para que la encuentres rápido."
         }

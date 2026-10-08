@@ -21,19 +21,29 @@ struct CurriculumLessonRow: View {
     let isLastViewed: Bool
     let isHighlighted: Bool
     let accent: Color
+    let courseDirectory: URL?
     let onTap: () -> Void
+
+    /// Lazily resolves the video thumbnail via `VideoThumbnailLoader`.
+    /// Only present for video items — PDF / HTML rows skip the loader
+    /// entirely. Held in `@State` so the loader instance is stable
+    /// across re-renders of the same row (`ForEach(module.items)` uses
+    /// `id: \.element.id`, see `CurriculumModuleRow`).
+    @State private var thumbnailLoader: VideoThumbnailLoader?
 
     init(
         item: CourseItem,
         isLastViewed: Bool = false,
         isHighlighted: Bool = false,
         accent: Color,
+        courseDirectory: URL? = nil,
         onTap: @escaping () -> Void
     ) {
         self.item = item
         self.isLastViewed = isLastViewed
         self.isHighlighted = isHighlighted
         self.accent = accent
+        self.courseDirectory = courseDirectory
         self.onTap = onTap
     }
 
@@ -52,6 +62,26 @@ struct CurriculumLessonRow: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel(accessibilityLabel)
+        .task { ensureThumbnailLoader() }
+        .onDisappear { thumbnailLoader?.cancel() }
+    }
+
+    /// Lazily sets up `thumbnailLoader` the first time the row appears
+    /// (and only if it's a video with a known course directory).
+    /// `@State` initialization at the `@State` declaration site is the
+    /// idiomatic SwiftUI pattern, but we don't have all inputs at
+    /// `init` time because SwiftUI calls `init` before the parent
+    /// environment stabilizes; this deferred form is safer.
+    private func ensureThumbnailLoader() {
+        guard item.type == .video,
+              thumbnailLoader == nil,
+              let courseDirectory else { return }
+        thumbnailLoader = VideoThumbnailLoader(
+            item: item,
+            courseDirectory: courseDirectory,
+            durationSeconds: item.durationSeconds
+        )
+        thumbnailLoader?.start()
     }
 
     // MARK: - Leading visual
@@ -71,14 +101,24 @@ struct CurriculumLessonRow: View {
 
     private var videoThumb: some View {
         ZStack {
-            LinearGradient(
-                colors: [accent.opacity(0.6), accent.opacity(0.3)],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-            Image(systemName: "play.fill")
-                .font(.system(size: 16, weight: .bold))
-                .foregroundStyle(.white)
+            // Background: either the resolved thumbnail, or the
+            // accent-tinted gradient placeholder. We never show a
+            // partial blur or a broken image — placeholder until the
+            // loader resolves.
+            if let image = thumbnailLoader?.image {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFill()
+            } else {
+                LinearGradient(
+                    colors: [accent.opacity(0.6), accent.opacity(0.3)],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+                Image(systemName: "play.fill")
+                    .font(.system(size: 16, weight: .bold))
+                    .foregroundStyle(.white)
+            }
         }
     }
 

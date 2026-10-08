@@ -41,6 +41,16 @@ struct CourseDetailView: View {
     @State private var pendingLessonNotice: PendingLessonNotice?
     @State private var pendingPosition: SearchPosition?
 
+    /// Lesson currently being watched. `nil` → normal detail (hero +
+    /// tabs). Non-nil → `VideoPlayerView` replaces the body. Tapping
+    /// a video lesson in `CurriculumView` sets this; the back button
+    /// in the player clears it. The `.id(item.id)` modifier on the
+    /// player view (in `body`) forces full reconstruction on every
+    /// lesson swap — without it the underlying `AVPlayer` would
+    /// silently keep playing the *old* URL when the user navigates
+    /// to a new lesson in the iPad split curriculum.
+    @State private var selectedLesson: CourseItem?
+
     init(
         courseID: UUID,
         store: LibraryStore,
@@ -69,54 +79,6 @@ struct CourseDetailView: View {
     private var accent: Color {
         guard let course else { return Color.appAccentFallback }
         return Color.themeAdjusted(from: store.coverColor(for: course))
-    }
-
-    var body: some View {
-        Group {
-            if let course {
-                if sizeClass == .regular {
-                    iPadSplit(course: course)
-                } else {
-                    iPhoneStack(course: course)
-                }
-            } else {
-                missingCoursePlaceholder
-            }
-        }
-        .background(Color.appBackground.ignoresSafeArea())
-        .navigationTitle(course?.title ?? "Curso")
-        .navigationBarTitleDisplayMode(.inline)
-        // Pull the search intent from the store on appear. The store
-        // may have been set by `LibraryView` when the user tapped a
-        // result, or by `RootView` directly when the iPad split
-        // route doesn't go through the library.
-        .onAppear {
-            if let item = store.highlightedItem, item.id == courseID {
-                pendingPosition = store.pendingSearchPosition
-            } else if initialHighlightedItemID != nil {
-                pendingPosition = initialPendingPosition
-            }
-        }
-        .onDisappear {
-            // Clear the store-level intent so the same course opened
-            // normally later doesn't re-show the banner.
-            if store.highlightedItem?.id == courseID {
-                store.highlightedItem = nil
-                store.pendingSearchPosition = nil
-            }
-        }
-        .alert(
-            pendingLessonNotice?.title ?? "",
-            isPresented: Binding(
-                get: { pendingLessonNotice != nil },
-                set: { if !$0 { pendingLessonNotice = nil } }
-            ),
-            presenting: pendingLessonNotice
-        ) { _ in
-            Button("OK", role: .cancel) { pendingLessonNotice = nil }
-        } message: { notice in
-            Text(notice.message)
-        }
     }
 
     // MARK: - iPhone layout
@@ -216,6 +178,87 @@ struct CourseDetailView: View {
         .pickerStyle(.segmented)
     }
 
+    var body: some View {
+        Group {
+            if let course {
+                if let lesson = selectedLesson {
+                    // Lesson view — replaces the normal detail chrome
+                    // when a video lesson is being watched. The
+                    // `.id(lesson.id)` is **critical**: it forces
+                    // SwiftUI to reconstruct this view (and thereby
+                    // the underlying `AVPlayer`) on every lesson swap
+                    // — without it the player would silently keep
+                    // rendering the old lesson's URL.
+                    VideoPlayerView(
+                        course: course,
+                        item: lesson,
+                        initialStartSeconds: pendingPosition?.startSecondsForVideo,
+                        onDismiss: {
+                            selectedLesson = nil
+                        },
+                        onSelectLesson: { item in
+                            handleOpenLesson(item)
+                        },
+                        onPositionConsumed: {
+                            consumePendingPosition()
+                        }
+                    )
+                    .id(lesson.id)
+                } else if sizeClass == .regular {
+                    iPadSplit(course: course)
+                } else {
+                    iPhoneStack(course: course)
+                }
+            } else {
+                missingCoursePlaceholder
+            }
+        }
+        .background(Color.appBackground.ignoresSafeArea())
+        .navigationTitle(course?.title ?? "Curso")
+        .navigationBarTitleDisplayMode(.inline)
+        // Pull the search intent from the store on appear. The store
+        // may have been set by `LibraryView` when the user tapped a
+        // result, or by `RootView` directly when the iPad split
+        // route doesn't go through the library.
+        .onAppear {
+            if let item = store.highlightedItem, item.id == courseID {
+                pendingPosition = store.pendingSearchPosition
+            } else if initialHighlightedItemID != nil {
+                pendingPosition = initialPendingPosition
+            }
+        }
+        .onDisappear {
+            // Clear the store-level intent so the same course opened
+            // normally later doesn't re-show the banner.
+            if store.highlightedItem?.id == courseID {
+                store.highlightedItem = nil
+                store.pendingSearchPosition = nil
+            }
+        }
+        .onChange(of: selectedLesson) { _, newValue in
+            // Closing the player (lesson → nil) is the natural clear
+            // signal for the per-course pending position. Same shape
+            // as the .onDisappear clear above, but covers the case
+            // where the user dismisses via the player's back button
+            // without leaving the detail.
+            if newValue == nil {
+                clearPendingPositionIfMatching()
+            }
+        }
+        .alert(
+            pendingLessonNotice?.title ?? "",
+            isPresented: Binding(
+                get: { pendingLessonNotice != nil },
+                set: { if !$0 { pendingLessonNotice = nil } }
+            ),
+            presenting: pendingLessonNotice
+        ) { _ in
+            Button("OK", role: .cancel) { pendingLessonNotice = nil }
+        } message: { notice in
+            Text(notice.message)
+        }
+    }
+
     // MARK: - Tab content
 
     @ViewBuilder
@@ -226,13 +269,15 @@ struct CourseDetailView: View {
                 course: course,
                 accent: accent,
                 highlightedItemID: initialHighlightedItemID,
+                courseDirectory: store.courseDirectoryURL(for: course),
                 onTapLesson: handleOpenLesson
             )
         case .description:
             // The Course model doesn't carry a description yet — the
-            // sidecar (Fase 5) is the source of truth. For Fase 3 we
-            // pass `nil`, so the view always shows its "Sin
-            // descripción." placeholder.
+            // sidecar (Fase 5) is the source of truth. We pass `nil`,
+            // so the view always shows its "Sin descripción."
+            // placeholder. Fase 10 will widen this when the Mac
+            // editor populates `description` on the sidecar.
             CourseDescriptionView(description: nil)
         case .files:
             CourseFilesView(
@@ -245,25 +290,77 @@ struct CourseDetailView: View {
 
     // MARK: - Actions
 
+    /// Tap on a lesson in the curriculum, the files tab, or the iPad
+    /// split's curriculum column. Video lessons get pushed /
+    /// swapped into the player; PDF / HTML visors are still pending
+    /// (Fase 7 / 8), so we surface the same "Próximamente" alert
+    /// they used before Fase 6.
     private func handleOpenLesson(_ item: CourseItem) {
-        // If we got here from a search result, keep the position
-        // banner visible while the user explores the curriculum. The
-        // position is per-course, not per-item, so we don't clear
-        // it on a normal tap.
-        let phase: String
         switch item.type {
-        case .video: phase = "Fase 6"
-        case .pdf: phase = "Fase 7"
-        case .html: phase = "Fase 8"
+        case .video:
+            // `selectedLesson` change re-renders the body with a fresh
+            // `VideoPlayerView` (`.id(item.id)` on the player call,
+            // see above). The pending-position banner stays visible
+            // until the player actually consumes the seek — see
+            // `consumePendingPosition`.
+            selectedLesson = item
+        case .pdf:
+            pendingLessonNotice = PendingLessonNotice(
+                title: "Próximamente",
+                message: "El visor de PDF llega en la Fase 7. Lección: \(item.title)."
+            )
+        case .html:
+            pendingLessonNotice = PendingLessonNotice(
+                title: "Próximamente",
+                message: "El visor de HTML llega en la Fase 8. Lección: \(item.title)."
+            )
         }
-        pendingLessonNotice = PendingLessonNotice(
-            title: "Próximamente",
-            message: "El visor de \(item.type.label) llega en \(phase). Lección: \(item.title)."
-        )
     }
 
     private func handleMarkCompleted() {
         store.markCourseCompleted(courseID: courseID)
+    }
+
+    /// Called by `VideoPlayerView.onPositionConsumed` when the initial
+    /// seek fires. Clears the per-course banner state both here and on
+    /// the store, so a re-open of the same course from search doesn't
+    /// re-trigger it. PDF/HTML pending positions are also cleared to
+    /// match — they get the same treatment once their visors land.
+    private func consumePendingPosition() {
+        pendingPosition = nil
+        if store.highlightedItem?.id == courseID {
+            store.highlightedItem = nil
+            store.pendingSearchPosition = nil
+        }
+    }
+
+    /// Same clearing pattern as `consumePendingPosition` but used
+    /// when the player is dismissed (back button) without ever
+    /// applying a seek — covers the case where the user opens the
+    /// player on a different lesson than the one the banner pointed
+    /// at, or never starts playback.
+    private func clearPendingPositionIfMatching() {
+        guard let pos = pendingPosition else { return }
+        switch pos {
+        case .subtitle(_, _, let id), .html(_, _, let id):
+            if id == courseID {
+                consumePendingPosition()
+            }
+        }
+    }
+}
+
+// MARK: - SearchPosition → startSeconds accessor
+
+private extension SearchPosition {
+    /// Returns the seconds to seek the video to, or `nil` for HTML
+    /// positions (Fase 8 will surface a paragraph-index-driven seek;
+    /// videos get the timestamp). Lets `CourseDetailView` pass a
+    /// single `Double?` to `VideoPlayerView` regardless of position
+    /// shape.
+    var startSecondsForVideo: Double? {
+        if case let .subtitle(seconds, _, _) = self { return seconds }
+        return nil
     }
 }
 
