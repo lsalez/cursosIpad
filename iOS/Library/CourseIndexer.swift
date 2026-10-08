@@ -1,0 +1,304 @@
+// CourseIndexer.swift
+//
+// Walks `Documents/Cursos/` and returns a `[Course]` snapshot of what's
+// there right now. Plan §9 has the detection rules; this file is the
+// concrete implementation.
+//
+// Lives in the iOS target (not in `Shared/`) because the indexer is
+// application logic on top of the model layer, and the macOS app will
+// get its own indexer in Fase 9 with slightly different rules.
+//
+// Performance shape:
+// 1. Fast recursive filesystem walk. Single-threaded. Should be a few
+//    hundred ms for a few hundred files.
+// 2. After the walk, a sequential AVAsset pass for video durations.
+//    Each `asset.load(.duration)` is on-demand but bounded; errors on
+//    individual files don't abort the scan — they just leave
+//    `durationSeconds` nil and get logged.
+// Errors don't bubble up unless the root directory itself is unreadable.
+
+import AVFoundation
+import Foundation
+import Shared
+
+public actor CourseIndexer {
+    public struct Configuration: Sendable {
+        public var documentsDirectoryName: String = "Cursos"
+        public init() {}
+    }
+
+    private let configuration: Configuration
+    private let fileManager: FileManager
+
+    public init(
+        configuration: Configuration = .init(),
+        fileManager: FileManager = .default
+    ) {
+        self.configuration = configuration
+        self.fileManager = fileManager
+    }
+
+    /// Index `Documents/Cursos/`. Returns an empty array if the directory
+    /// doesn't exist yet (first launch). Sorted by `folderName` using
+    /// `localizedStandardCompare`.
+    public func index() async throws -> [Course] {
+        let coursesRoot = try resolveCoursesRoot()
+        guard let coursesRoot else { return [] }
+        return try await indexDirectory(at: coursesRoot)
+    }
+
+    // MARK: - Internals
+
+    /// Resolves the on-disk location to scan. Returns `nil` if the
+    /// Documents directory can't be located (extremely unusual on iOS).
+    private func resolveCoursesRoot() throws -> URL? {
+        guard let docs = fileManager.urls(
+            for: .documentDirectory,
+            in: .userDomainMask
+        ).first else {
+            return nil
+        }
+        let cursos = docs.appendingPathComponent(
+            configuration.documentsDirectoryName,
+            isDirectory: true
+        )
+        var isDir: ObjCBool = false
+        guard fileManager.fileExists(atPath: cursos.path, isDirectory: &isDir),
+              isDir.boolValue else {
+            return nil
+        }
+        return cursos
+    }
+
+    private func indexDirectory(at coursesRoot: URL) async throws -> [Course] {
+        let entries: [URL]
+        do {
+            entries = try fileManager.contentsOfDirectory(
+                at: coursesRoot,
+                includingPropertiesForKeys: [.isDirectoryKey],
+                options: [.skipsHiddenFiles]
+            )
+        } catch {
+            print("[CourseIndexer] Failed to list courses root \(coursesRoot.path): \(error)")
+            return []
+        }
+
+        var courses: [Course] = []
+        for entry in entries {
+            let isDir = (try? entry.resourceValues(forKeys: [.isDirectoryKey]))?.isDirectory ?? false
+            guard isDir else { continue }
+            let course = buildCourse(at: entry, coursesRoot: coursesRoot)
+            courses.append(course)
+        }
+
+        let withDurations = await prefetchVideoDurations(courses: courses, coursesRoot: coursesRoot)
+        return withDurations.sorted { lhs, rhs in
+            lhs.folderName.localizedStandardCompare(rhs.folderName) == .orderedAscending
+        }
+    }
+
+    /// One-shot scan of a single course folder. Collects: cover filename,
+    /// a `Module` for each first-level subdirectory, plus a virtual
+    /// `General` `Module` for any recognized files sitting in the root.
+    private func buildCourse(at courseURL: URL, coursesRoot: URL) -> Course {
+        let folderName = courseURL.lastPathComponent
+        let title = folderName
+        let coverFileName = detectCover(at: courseURL)
+
+        var modules: [Module] = []
+        var generalItems: [CourseItem] = []
+
+        let contents: [URL]
+        do {
+            contents = try fileManager.contentsOfDirectory(
+                at: courseURL,
+                includingPropertiesForKeys: [.isDirectoryKey],
+                options: [.skipsHiddenFiles]
+            )
+        } catch {
+            print("[CourseIndexer] Failed to list course dir \(courseURL.path): \(error)")
+            return Course(
+                folderName: folderName,
+                title: title,
+                coverFileName: coverFileName,
+                tags: [],
+                modules: []
+            )
+        }
+
+        for entry in contents.sorted(by: { $0.lastPathComponent.localizedStandardCompare($1.lastPathComponent) == .orderedAscending }) {
+            let isDir = (try? entry.resourceValues(forKeys: [.isDirectoryKey]))?.isDirectory ?? false
+            if isDir {
+                let module = buildModule(at: entry, courseRoot: courseURL)
+                if !module.items.isEmpty || true { // keep empty modules too — plan §9 is silent on this
+                    modules.append(module)
+                }
+            } else if let type = itemType(for: entry) {
+                let item = buildItem(at: entry, in: courseURL, type: type)
+                generalItems.append(item)
+            }
+        }
+
+        if !generalItems.isEmpty {
+            modules.append(Module(
+                folderName: "",
+                title: "General",
+                items: generalItems
+            ))
+        }
+
+        return Course(
+            folderName: folderName,
+            title: title,
+            coverFileName: coverFileName,
+            tags: [],
+            modules: modules
+        )
+    }
+
+    /// Build a `Module` from a first-level subdirectory. Recursively
+    /// collects recognized items below it.
+    private func buildModule(at moduleURL: URL, courseRoot: URL) -> Module {
+        let folderName = moduleURL.lastPathComponent
+        let items = collectItems(in: moduleURL, courseRoot: courseRoot, currentlyRelativePath: folderName)
+        return Module(
+            folderName: folderName,
+            title: folderName,
+            items: items
+        )
+    }
+
+    /// Recursive scan starting at `directory`. Returns items with their
+    /// `relativePath` anchored at `courseRoot`, so e.g. a video at
+    /// `course/01 Intro/sub/file.mp4` becomes relative path
+    /// `01 Intro/sub/file.mp4`.
+    private func collectItems(
+        in directory: URL,
+        courseRoot: URL,
+        currentlyRelativePath: String
+    ) -> [CourseItem] {
+        let contents: [URL]
+        do {
+            contents = try fileManager.contentsOfDirectory(
+                at: directory,
+                includingPropertiesForKeys: [.isDirectoryKey],
+                options: [.skipsHiddenFiles]
+            )
+        } catch {
+            print("[CourseIndexer] Failed to list module dir \(directory.path): \(error)")
+            return []
+        }
+
+        var items: [CourseItem] = []
+        for entry in contents.sorted(by: { $0.lastPathComponent.localizedStandardCompare($1.lastPathComponent) == .orderedAscending }) {
+            let isDir = (try? entry.resourceValues(forKeys: [.isDirectoryKey]))?.isDirectory ?? false
+            if isDir {
+                let nextRelative = "\(currentlyRelativePath)/\(entry.lastPathComponent)"
+                items.append(contentsOf: collectItems(in: entry, courseRoot: courseRoot, currentlyRelativePath: nextRelative))
+            } else if let type = itemType(for: entry) {
+                let absoluteRelativePath = "\(currentlyRelativePath)/\(entry.lastPathComponent)"
+                let item = buildItem(
+                    at: entry,
+                    in: courseRoot,
+                    type: type,
+                    relativePath: absoluteRelativePath
+                )
+                items.append(item)
+            }
+        }
+        return items
+    }
+
+    /// Cover detection per plan §9: prefer `cover.jpg`, then `cover.png`,
+    /// then the alphabetically first image in root. Returns the basename
+    /// of the chosen cover, or `nil` if none.
+    private func detectCover(at courseURL: URL) -> String? {
+        let candidates: [URL]
+        do {
+            candidates = try fileManager.contentsOfDirectory(
+                at: courseURL,
+                includingPropertiesForKeys: nil,
+                options: [.skipsHiddenFiles]
+            )
+        } catch {
+            return nil
+        }
+
+        let images = candidates.filter { url in
+            ItemType.imageExtensions.contains(url.pathExtension.lowercased())
+        }
+
+        if let jpg = images.first(where: { $0.lastPathComponent.lowercased() == "cover.jpg" }) {
+            return jpg.lastPathComponent
+        }
+        if let png = images.first(where: { $0.lastPathComponent.lowercased() == "cover.png" }) {
+            return png.lastPathComponent
+        }
+        return images
+            .sorted { $0.lastPathComponent.localizedStandardCompare($1.lastPathComponent) == .orderedAscending }
+            .first?
+            .lastPathComponent
+    }
+
+    /// Map a file URL to an `ItemType`, or `nil` if it's not recognized.
+    private func itemType(for url: URL) -> ItemType? {
+        ItemType.from(extension: url.pathExtension)
+    }
+
+    /// Build a `CourseItem` for a single file. `relativePath` defaults
+    /// to just the filename (used for items at the course root, which
+    /// end up in the virtual `General` module).
+    private func buildItem(
+        at url: URL,
+        in courseRoot: URL,
+        type: ItemType,
+        relativePath: String? = nil
+    ) -> CourseItem {
+        let resolvedRelative = relativePath ?? url.lastPathComponent
+        let title = (url.lastPathComponent as NSString).deletingPathExtension
+        let size = (try? fileManager.attributesOfItem(atPath: url.path)[.size] as? NSNumber)?.int64Value ?? 0
+        return CourseItem(
+            relativePath: resolvedRelative,
+            type: type,
+            title: title,
+            sizeBytes: size,
+            durationSeconds: nil
+        )
+    }
+
+    /// Sequential AVAsset pass: for every video item across all courses,
+    /// open it with `AVURLAsset` and read `.duration`. Errors on
+    /// individual files are logged and `durationSeconds` stays nil.
+    /// Concurrency note: we deliberately serialize this — Fase 2+ can
+    /// parallelize if it ever shows up as a hotspot.
+    private func prefetchVideoDurations(courses: [Course], coursesRoot: URL) async -> [Course] {
+        var updated = courses
+        for courseIndex in updated.indices {
+            for moduleIndex in updated[courseIndex].modules.indices {
+                for itemIndex in updated[courseIndex].modules[moduleIndex].items.indices
+                where updated[courseIndex].modules[moduleIndex].items[itemIndex].type == .video
+                {
+                    let relativePath = updated[courseIndex].modules[moduleIndex].items[itemIndex].relativePath
+                    let fileURL = coursesRoot
+                        .appendingPathComponent(updated[courseIndex].folderName, isDirectory: true)
+                        .appendingPathComponent(relativePath)
+                    let duration = await loadDuration(for: fileURL)
+                    updated[courseIndex].modules[moduleIndex].items[itemIndex].durationSeconds = duration
+                }
+            }
+        }
+        return updated
+    }
+
+    private func loadDuration(for url: URL) async -> Double? {
+        let asset = AVURLAsset(url: url)
+        do {
+            let duration = try await asset.load(.duration)
+            guard duration.isValid, duration.isNumeric, duration.value > 0 else { return nil }
+            return CMTimeGetSeconds(duration)
+        } catch {
+            print("[CourseIndexer] AVAsset duration load failed for \(url.lastPathComponent): \(error)")
+            return nil
+        }
+    }
+}

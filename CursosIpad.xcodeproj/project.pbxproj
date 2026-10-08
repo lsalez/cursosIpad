@@ -8,19 +8,23 @@
 
 /* Begin PBXBuildFile section */
 		0B2A390FCC5B5B254AA8E704 /* CursosIpadMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB79334C67F08618166961B /* CursosIpadMacApp.swift */; };
+		337613326674377D0326BC03 /* DebugLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64F3388BDAB04D4708659E7 /* DebugLibraryView.swift */; };
 		3C33F37E89A9F2BE3D3FCEA8 /* Shared in Frameworks */ = {isa = PBXBuildFile; productRef = 5B4AA06957FA6BDDFDA5FF7B /* Shared */; };
 		697F374DA3A8E8365F13247D /* Shared in Frameworks */ = {isa = PBXBuildFile; productRef = 63AB7FC03545D42D12708026 /* Shared */; };
 		70A40ECB09806B5F9E350FEE /* CursosIpadApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D143650172A9765142D3E3A /* CursosIpadApp.swift */; };
+		EE169A01009A4AD16AF8F1F9 /* CourseIndexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A80B9948812EF94F18380C8 /* CourseIndexer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		0D143650172A9765142D3E3A /* CursosIpadApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CursosIpadApp.swift; sourceTree = "<group>"; };
 		0EB79334C67F08618166961B /* CursosIpadMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CursosIpadMacApp.swift; sourceTree = "<group>"; };
 		253A68D3133E014B411561B8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		2A80B9948812EF94F18380C8 /* CourseIndexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseIndexer.swift; sourceTree = "<group>"; };
 		351FC477AC44CADA27D1A000 /* CursosIpadMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CursosIpadMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3C09071BDDE6DB1F3DEB5474 /* CursosIpad.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = CursosIpad.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A35C371F8F3E90F66712DDA /* Shared */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Shared; path = Shared; sourceTree = SOURCE_ROOT; };
 		8BAC86969C10E234997C39C6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		B64F3388BDAB04D4708659E7 /* DebugLibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugLibraryView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,6 +47,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		28857AA967281A77298C1E98 /* Library */ = {
+			isa = PBXGroup;
+			children = (
+				2A80B9948812EF94F18380C8 /* CourseIndexer.swift */,
+			);
+			path = Library;
+			sourceTree = "<group>";
+		};
 		32179ECE22E6855DF526748C /* macOS */ = {
 			isa = PBXGroup;
 			children = (
@@ -60,6 +72,14 @@
 			name = Packages;
 			sourceTree = "<group>";
 		};
+		A6A662538668EEC6B5FB6B92 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				B64F3388BDAB04D4708659E7 /* DebugLibraryView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		BBE3862821A1ED6B41635924 = {
 			isa = PBXGroup;
 			children = (
@@ -73,6 +93,8 @@
 		CB4B19CCC85D6A3361A7FB45 /* iOS */ = {
 			isa = PBXGroup;
 			children = (
+				28857AA967281A77298C1E98 /* Library */,
+				A6A662538668EEC6B5FB6B92 /* Views */,
 				0D143650172A9765142D3E3A /* CursosIpadApp.swift */,
 				253A68D3133E014B411561B8 /* Info.plist */,
 			);
@@ -183,7 +205,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EE169A01009A4AD16AF8F1F9 /* CourseIndexer.swift in Sources */,
 				70A40ECB09806B5F9E350FEE /* CursosIpadApp.swift in Sources */,
+				337613326674377D0326BC03 /* DebugLibraryView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
