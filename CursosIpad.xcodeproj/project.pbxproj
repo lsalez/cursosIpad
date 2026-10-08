@@ -7,38 +7,60 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		003749B0FB0A649B0E416AA1 /* CourseFilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39D915D3004D7055000EF9A1 /* CourseFilesView.swift */; };
 		0B2A390FCC5B5B254AA8E704 /* CursosIpadMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB79334C67F08618166961B /* CursosIpadMacApp.swift */; };
+		17F60EC70067CA02A9147737 /* DetailTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0F6BE1CE5D2C8257BBCDBA7 /* DetailTab.swift */; };
 		280833D760E66886C2F97D76 /* BrandColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 690B1DBA4364BE0ADF980C19 /* BrandColors.swift */; };
+		31AABB8272F4865F63E1423C /* CurriculumLessonRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563CB9F05B1BEBBC1104D74E /* CurriculumLessonRow.swift */; };
 		337613326674377D0326BC03 /* DebugLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64F3388BDAB04D4708659E7 /* DebugLibraryView.swift */; };
 		3C33F37E89A9F2BE3D3FCEA8 /* Shared in Frameworks */ = {isa = PBXBuildFile; productRef = 5B4AA06957FA6BDDFDA5FF7B /* Shared */; };
 		4C10F567FEDEC5B4E163D06D /* LibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491A47CC2B5E7D24FCC01D0B /* LibraryView.swift */; };
 		51BF98E90BD9BFD42C5E45BF /* CoverImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09E197E1D5F82A730F788AB6 /* CoverImageLoader.swift */; };
+		56167AE04AD797F42423B444 /* CourseDescriptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4780CC8A07F665B92053BD86 /* CourseDescriptionView.swift */; };
+		5FBCC6C695F9A6011D0A70AD /* CurriculumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 834E5A47C350B9FF24F23BB6 /* CurriculumView.swift */; };
+		6005447F98B737C87FECC6B3 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD9158EF0A6A6C0284754C31 /* WelcomeView.swift */; };
 		697F374DA3A8E8365F13247D /* Shared in Frameworks */ = {isa = PBXBuildFile; productRef = 63AB7FC03545D42D12708026 /* Shared */; };
 		70A40ECB09806B5F9E350FEE /* CursosIpadApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D143650172A9765142D3E3A /* CursosIpadApp.swift */; };
 		815C138A6DA7D48ADD1412B3 /* CoverColorExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41CBB816DF3D7AB0D32B9515 /* CoverColorExtractor.swift */; };
+		9A5D678473C220E47C338EA9 /* CourseHeroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 834F243046A11F392D7DD31D /* CourseHeroView.swift */; };
 		A634D86E520C993735F79D5C /* LibraryEmptyState.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2D0B1A8B02D8DB1587DF70 /* LibraryEmptyState.swift */; };
 		A9E34E7A3316E0F7836E560E /* CourseCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478641B1A61CF979C226BA62 /* CourseCardView.swift */; };
+		ACE8DB211EAAB3E8B3281C11 /* CurriculumModuleRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E0A2398ECBA8EDAF56B52D /* CurriculumModuleRow.swift */; };
+		BC9671D6FA2D2C9D977F3AD0 /* CourseAccentColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05511914277BFE47C9035804 /* CourseAccentColor.swift */; };
+		CA61673AD1022B4B75FD8134 /* CoursePrimaryCTA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722298A0A2FA143553E6EB0E /* CoursePrimaryCTA.swift */; };
 		CCA0FD3ECFD737EF9A19D012 /* LibraryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F22319F993D121E691400787 /* LibraryStore.swift */; };
+		D17A640430F77FB744F1404F /* CourseDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CDFBD5C638DE34D2186F87 /* CourseDetailView.swift */; };
 		EE169A01009A4AD16AF8F1F9 /* CourseIndexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A80B9948812EF94F18380C8 /* CourseIndexer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		05511914277BFE47C9035804 /* CourseAccentColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseAccentColor.swift; sourceTree = "<group>"; };
 		09E197E1D5F82A730F788AB6 /* CoverImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverImageLoader.swift; sourceTree = "<group>"; };
 		0D143650172A9765142D3E3A /* CursosIpadApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CursosIpadApp.swift; sourceTree = "<group>"; };
 		0EB79334C67F08618166961B /* CursosIpadMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CursosIpadMacApp.swift; sourceTree = "<group>"; };
 		253A68D3133E014B411561B8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		2A80B9948812EF94F18380C8 /* CourseIndexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseIndexer.swift; sourceTree = "<group>"; };
 		351FC477AC44CADA27D1A000 /* CursosIpadMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CursosIpadMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		36E0A2398ECBA8EDAF56B52D /* CurriculumModuleRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurriculumModuleRow.swift; sourceTree = "<group>"; };
+		39D915D3004D7055000EF9A1 /* CourseFilesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseFilesView.swift; sourceTree = "<group>"; };
 		3C09071BDDE6DB1F3DEB5474 /* CursosIpad.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = CursosIpad.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		41CBB816DF3D7AB0D32B9515 /* CoverColorExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverColorExtractor.swift; sourceTree = "<group>"; };
+		4780CC8A07F665B92053BD86 /* CourseDescriptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseDescriptionView.swift; sourceTree = "<group>"; };
 		478641B1A61CF979C226BA62 /* CourseCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseCardView.swift; sourceTree = "<group>"; };
 		491A47CC2B5E7D24FCC01D0B /* LibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryView.swift; sourceTree = "<group>"; };
+		563CB9F05B1BEBBC1104D74E /* CurriculumLessonRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurriculumLessonRow.swift; sourceTree = "<group>"; };
 		690B1DBA4364BE0ADF980C19 /* BrandColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrandColors.swift; sourceTree = "<group>"; };
+		722298A0A2FA143553E6EB0E /* CoursePrimaryCTA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoursePrimaryCTA.swift; sourceTree = "<group>"; };
+		834E5A47C350B9FF24F23BB6 /* CurriculumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurriculumView.swift; sourceTree = "<group>"; };
+		834F243046A11F392D7DD31D /* CourseHeroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseHeroView.swift; sourceTree = "<group>"; };
 		8A35C371F8F3E90F66712DDA /* Shared */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Shared; path = Shared; sourceTree = SOURCE_ROOT; };
 		8BAC86969C10E234997C39C6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		AD2D0B1A8B02D8DB1587DF70 /* LibraryEmptyState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryEmptyState.swift; sourceTree = "<group>"; };
 		B64F3388BDAB04D4708659E7 /* DebugLibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugLibraryView.swift; sourceTree = "<group>"; };
+		C2CDFBD5C638DE34D2186F87 /* CourseDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseDetailView.swift; sourceTree = "<group>"; };
+		D0F6BE1CE5D2C8257BBCDBA7 /* DetailTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailTab.swift; sourceTree = "<group>"; };
 		F22319F993D121E691400787 /* LibraryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryStore.swift; sourceTree = "<group>"; };
+		FD9158EF0A6A6C0284754C31 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,6 +115,7 @@
 			isa = PBXGroup;
 			children = (
 				690B1DBA4364BE0ADF980C19 /* BrandColors.swift */,
+				05511914277BFE47C9035804 /* CourseAccentColor.swift */,
 			);
 			path = Theme;
 			sourceTree = "<group>";
@@ -100,10 +123,28 @@
 		A6A662538668EEC6B5FB6B92 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				B49EC1325EC8DB8B6DDEE969 /* Detail */,
 				EFD771B38B9D3C59595BD93B /* Library */,
+				E635E32E724265BBB916447B /* Welcome */,
 				B64F3388BDAB04D4708659E7 /* DebugLibraryView.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		B49EC1325EC8DB8B6DDEE969 /* Detail */ = {
+			isa = PBXGroup;
+			children = (
+				4780CC8A07F665B92053BD86 /* CourseDescriptionView.swift */,
+				C2CDFBD5C638DE34D2186F87 /* CourseDetailView.swift */,
+				39D915D3004D7055000EF9A1 /* CourseFilesView.swift */,
+				834F243046A11F392D7DD31D /* CourseHeroView.swift */,
+				722298A0A2FA143553E6EB0E /* CoursePrimaryCTA.swift */,
+				563CB9F05B1BEBBC1104D74E /* CurriculumLessonRow.swift */,
+				36E0A2398ECBA8EDAF56B52D /* CurriculumModuleRow.swift */,
+				834E5A47C350B9FF24F23BB6 /* CurriculumView.swift */,
+				D0F6BE1CE5D2C8257BBCDBA7 /* DetailTab.swift */,
+			);
+			path = Detail;
 			sourceTree = "<group>";
 		};
 		BBE3862821A1ED6B41635924 = {
@@ -135,6 +176,14 @@
 				351FC477AC44CADA27D1A000 /* CursosIpadMac.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		E635E32E724265BBB916447B /* Welcome */ = {
+			isa = PBXGroup;
+			children = (
+				FD9158EF0A6A6C0284754C31 /* WelcomeView.swift */,
+			);
+			path = Welcome;
 			sourceTree = "<group>";
 		};
 		EFD771B38B9D3C59595BD93B /* Library */ = {
@@ -243,15 +292,26 @@
 			buildActionMask = 2147483647;
 			files = (
 				280833D760E66886C2F97D76 /* BrandColors.swift in Sources */,
+				BC9671D6FA2D2C9D977F3AD0 /* CourseAccentColor.swift in Sources */,
 				A9E34E7A3316E0F7836E560E /* CourseCardView.swift in Sources */,
+				56167AE04AD797F42423B444 /* CourseDescriptionView.swift in Sources */,
+				D17A640430F77FB744F1404F /* CourseDetailView.swift in Sources */,
+				003749B0FB0A649B0E416AA1 /* CourseFilesView.swift in Sources */,
+				9A5D678473C220E47C338EA9 /* CourseHeroView.swift in Sources */,
 				EE169A01009A4AD16AF8F1F9 /* CourseIndexer.swift in Sources */,
+				CA61673AD1022B4B75FD8134 /* CoursePrimaryCTA.swift in Sources */,
 				815C138A6DA7D48ADD1412B3 /* CoverColorExtractor.swift in Sources */,
 				51BF98E90BD9BFD42C5E45BF /* CoverImageLoader.swift in Sources */,
+				31AABB8272F4865F63E1423C /* CurriculumLessonRow.swift in Sources */,
+				ACE8DB211EAAB3E8B3281C11 /* CurriculumModuleRow.swift in Sources */,
+				5FBCC6C695F9A6011D0A70AD /* CurriculumView.swift in Sources */,
 				70A40ECB09806B5F9E350FEE /* CursosIpadApp.swift in Sources */,
 				337613326674377D0326BC03 /* DebugLibraryView.swift in Sources */,
+				17F60EC70067CA02A9147737 /* DetailTab.swift in Sources */,
 				A634D86E520C993735F79D5C /* LibraryEmptyState.swift in Sources */,
 				CCA0FD3ECFD737EF9A19D012 /* LibraryStore.swift in Sources */,
 				4C10F567FEDEC5B4E163D06D /* LibraryView.swift in Sources */,
+				6005447F98B737C87FECC6B3 /* WelcomeView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -20,6 +20,14 @@ import SwiftUI
 struct LibraryView: View {
     @EnvironmentObject private var store: LibraryStore
 
+    /// Called when the user taps a course card. The parent decides
+    /// how to route the selection — push on iPhone (`NavigationStack`
+    /// path), update the detail column on iPad
+    /// (`NavigationSplitView` selection), etc. We use a closure
+    /// rather than `NavigationLink(value:)` because the latter
+    /// doesn't update the iPad split-view detail column reliably.
+    let onSelectCourse: (Course) -> Void
+
     @State private var searchText: String = ""
     @State private var selectedTag: String? = nil
     @State private var sortOrder: LibrarySortOrder = .alphabetical
@@ -123,9 +131,17 @@ struct LibraryView: View {
         } else {
             switch displayMode {
             case .grid:
-                CourseGrid(courses: visibleCourses, store: store)
+                CourseGrid(
+                    courses: visibleCourses,
+                    store: store,
+                    onSelectCourse: onSelectCourse
+                )
             case .list:
-                CourseList(courses: visibleCourses, store: store)
+                CourseList(
+                    courses: visibleCourses,
+                    store: store,
+                    onSelectCourse: onSelectCourse
+                )
             }
         }
     }
@@ -243,6 +259,7 @@ enum LibraryDisplayMode {
 private struct CourseGrid: View {
     let courses: [Course]
     let store: LibraryStore
+    let onSelectCourse: (Course) -> Void
 
     private let columns = [
         GridItem(.adaptive(minimum: 160, maximum: 220), spacing: 12, alignment: .top),
@@ -251,7 +268,12 @@ private struct CourseGrid: View {
     var body: some View {
         LazyVGrid(columns: columns, alignment: .leading, spacing: 12) {
             ForEach(courses) { course in
-                CourseCardView(course: course, store: store)
+                Button {
+                    onSelectCourse(course)
+                } label: {
+                    CourseCardView(course: course, store: store)
+                }
+                .buttonStyle(.plain)
             }
         }
     }
@@ -260,11 +282,17 @@ private struct CourseGrid: View {
 private struct CourseList: View {
     let courses: [Course]
     let store: LibraryStore
+    let onSelectCourse: (Course) -> Void
 
     var body: some View {
         VStack(spacing: 8) {
             ForEach(courses) { course in
-                CourseCardView(course: course, store: store)
+                Button {
+                    onSelectCourse(course)
+                } label: {
+                    CourseCardView(course: course, store: store)
+                }
+                .buttonStyle(.plain)
             }
         }
     }

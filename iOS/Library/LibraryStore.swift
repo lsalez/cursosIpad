@@ -100,4 +100,28 @@ final class LibraryStore: ObservableObject {
         coverColorCache[url] = color
         return color
     }
+
+    /// Mark every item in the course as completed. Used by the
+    /// "Marcar curso como completado" button on the detail hero.
+    ///
+    /// In-memory only for Fase 3 — there's no sidecar yet, so the
+    /// next index reset will lose the state. Fase 5 (sidecar) makes
+    /// this persistent; the public surface here doesn't change.
+    func markCourseCompleted(courseID: UUID) {
+        guard let index = courses.firstIndex(where: { $0.id == courseID }) else {
+            return
+        }
+        var updated = courses[index]
+        for moduleIndex in updated.modules.indices {
+            for itemIndex in updated.modules[moduleIndex].items.indices {
+                var item = updated.modules[moduleIndex].items[itemIndex]
+                if !item.progress.isCompleted {
+                    item.progress.isCompleted = true
+                    item.progress.completionMarkedAt = Date()
+                }
+                updated.modules[moduleIndex].items[itemIndex] = item
+            }
+        }
+        courses[index] = updated
+    }
 }

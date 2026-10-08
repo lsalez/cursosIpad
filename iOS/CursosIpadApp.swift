@@ -1,62 +1,94 @@
 // CursosIpadApp.swift
 //
-// Entry point for the iOS app. Phase 0 shipped a placeholder; Phase 1
-// mounted `DebugLibraryView`; Phase 2 replaces that with the real
-// library, hosted behind a `RootView` that adapts to the device:
+// Entry point for the iOS app.
 //
-//   - iPhone / compact width: single `NavigationStack` so the library
-//     is the root and selecting a course pushes the detail.
-//   - iPad / regular width: `NavigationSplitView` with the library on
-//     the left and a detail placeholder on the right. The placeholder
-//     sticks around until Fase 3 wires the real course detail view.
+// Lifecycle:
+//   1. First launch (`@AppStorage("hasSeenWelcome") == false`): show
+//      `WelcomeView` so the user gets a one-time orientation. Tapping
+//      "Listo" flips the flag and we move on to step 2.
+//   2. Normal launches: show `RootView`, which adapts to the device
+//      size class — iPhone gets a `NavigationStack` with the library
+//      as root and the detail pushed on tap; iPad gets a
+//      `NavigationSplitView` with the library in the sidebar and the
+//      detail in the right column. The split-view selection is
+//      driven by an explicit `onSelectCourse` callback from the
+//      library rather than `NavigationLink(value:)`, because
+//      `NavigationLink` inside a `NavigationSplitView` sidebar
+//      doesn't reliably update the detail column.
 //
 // The `LibraryStore` is created once at the app scope and injected
 // via `@EnvironmentObject` so every view (library, detail, future
 // search) sees the same `courses` snapshot.
 
+import Shared
 import SwiftUI
 
 @main
 struct CursosIpadApp: App {
     @StateObject private var library = LibraryStore()
+    @AppStorage("hasSeenWelcome") private var hasSeenWelcome: Bool = false
 
     var body: some Scene {
         WindowGroup {
-            RootView()
-                .environmentObject(library)
+            if hasSeenWelcome {
+                RootView()
+                    .environmentObject(library)
+            } else {
+                WelcomeView()
+            }
         }
     }
 }
 
 /// Top-level container. Decides between a single `NavigationStack`
-/// and a `NavigationSplitView` based on the current horizontal size
-/// class. The library view itself is identical in both cases — the
-/// split view is just chrome.
+/// (iPhone) and a `NavigationSplitView` (iPad) based on the current
+/// horizontal size class. The library view itself is identical in
+/// both cases — the split-view column switching is just chrome.
 struct RootView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSize
+    @EnvironmentObject private var library: LibraryStore
+
+    /// Course selected in the sidebar. Used by the iPad branch to
+    /// drive the detail column. On iPhone it's unused — the
+    /// `NavigationStack` owns its own `path`.
+    @State private var selectedCourse: Course?
+
+    /// Push path for the iPhone `NavigationStack`.
+    @State private var path: [Course] = []
 
     var body: some View {
         if horizontalSize == .regular {
             NavigationSplitView {
                 NavigationStack {
-                    LibraryView()
+                    LibraryView { course in
+                        selectedCourse = course
+                    }
                 }
             } detail: {
-                NavigationStack {
+                if let course = selectedCourse {
+                    NavigationStack {
+                        CourseDetailView(courseID: course.id, store: library)
+                    }
+                } else {
                     CourseSelectionPlaceholder()
                 }
             }
             .navigationSplitViewStyle(.balanced)
         } else {
-            NavigationStack {
-                LibraryView()
+            NavigationStack(path: $path) {
+                LibraryView { course in
+                    path.append(course)
+                }
+                .navigationDestination(for: Course.self) { course in
+                    CourseDetailView(courseID: course.id, store: library)
+                }
             }
         }
     }
 }
 
 /// Detail-column placeholder shown on iPad until the user picks a
-/// course. Replaced by `CourseDetailView` in Fase 3.
+/// course.
 private struct CourseSelectionPlaceholder: View {
     var body: some View {
         VStack(spacing: 12) {
