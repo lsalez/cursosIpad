@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		003749B0FB0A649B0E416AA1 /* CourseFilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39D915D3004D7055000EF9A1 /* CourseFilesView.swift */; };
 		04BD8EA5A4BBC9B0EA51E141 /* PDFViewerRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2F5408C5436652672BEEE2 /* PDFViewerRepresentable.swift */; };
+		06B5B1FABE94C36D9E43C2AB /* BrandColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0666A528660AB2AC41ADDCA7 /* BrandColors.swift */; };
 		0B2A390FCC5B5B254AA8E704 /* CursosIpadMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EB79334C67F08618166961B /* CursosIpadMacApp.swift */; };
 		0C2B293C59289C4CB81834FF /* SearchIndexDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B35530200F6DF4AB4F41737D /* SearchIndexDatabase.swift */; };
 		17F60EC70067CA02A9147737 /* DetailTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0F6BE1CE5D2C8257BBCDBA7 /* DetailTab.swift */; };
@@ -20,19 +21,25 @@
 		3C33F37E89A9F2BE3D3FCEA8 /* Shared in Frameworks */ = {isa = PBXBuildFile; productRef = 5B4AA06957FA6BDDFDA5FF7B /* Shared */; };
 		3F118093CA2B5739C60C44C3 /* HTMLViewerRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F84181D3B6B19FB49E69C7 /* HTMLViewerRepresentable.swift */; };
 		405CF670E9C66BC0191E4C4D /* SubtitleCue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 158B96B3A820FD3E5DA9E940 /* SubtitleCue.swift */; };
+		46D39D630A8C009FF9BD2F46 /* MacSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF1621103A6F52D8906042C /* MacSettingsView.swift */; };
 		4C10F567FEDEC5B4E163D06D /* LibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491A47CC2B5E7D24FCC01D0B /* LibraryView.swift */; };
 		51BF98E90BD9BFD42C5E45BF /* CoverImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09E197E1D5F82A730F788AB6 /* CoverImageLoader.swift */; };
 		56167AE04AD797F42423B444 /* CourseDescriptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4780CC8A07F665B92053BD86 /* CourseDescriptionView.swift */; };
+		58C0706464BA043AA02755F7 /* MacSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867AF7888C625F9241094AC5 /* MacSettings.swift */; };
 		599D814862E13BD594C77A12 /* SearchIndexingBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 582D604610D451E0F953D6C5 /* SearchIndexingBanner.swift */; };
+		5B7B068242E35889733CE1E9 /* MacCourseIndexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D72E197333F5A23644861F7 /* MacCourseIndexer.swift */; };
 		5C2061971271F3AF9754C8BE /* VideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 955CB0FEF409426B08E6A378 /* VideoPlayerView.swift */; };
+		5DD05F2666E99F2C70E368D1 /* CourseAccentColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8178C99919E2F57F4EC25C51 /* CourseAccentColor.swift */; };
 		5FBCC6C695F9A6011D0A70AD /* CurriculumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 834E5A47C350B9FF24F23BB6 /* CurriculumView.swift */; };
 		6005447F98B737C87FECC6B3 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD9158EF0A6A6C0284754C31 /* WelcomeView.swift */; };
 		697F374DA3A8E8365F13247D /* Shared in Frameworks */ = {isa = PBXBuildFile; productRef = 63AB7FC03545D42D12708026 /* Shared */; };
 		70A40ECB09806B5F9E350FEE /* CursosIpadApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D143650172A9765142D3E3A /* CursosIpadApp.swift */; };
 		74923B98DB1B3F9CCD2171AD /* PDFViewerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8307977621F03519697085F /* PDFViewerView.swift */; };
+		79E6FE7EA237C373D2C562FC /* MacLibrarySidebar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B61104C957BC3C70D13FC557 /* MacLibrarySidebar.swift */; };
 		815C138A6DA7D48ADD1412B3 /* CoverColorExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41CBB816DF3D7AB0D32B9515 /* CoverColorExtractor.swift */; };
 		834525AAE9D1174DADF7BF22 /* HTMLViewerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D13464D888BF90879222713 /* HTMLViewerView.swift */; };
 		8826D81F88AD3B95C446BB34 /* SearchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCC09C4B08A671C054BB72C9 /* SearchService.swift */; };
+		8BCC4FF3817872EA0930EDE3 /* MacCoverColorExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E6577613ED0485457F61735 /* MacCoverColorExtractor.swift */; };
 		94F1AE0EB9D51A65691239E4 /* VideoThumbnailLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86E06083B71B9B1CB14911EA /* VideoThumbnailLoader.swift */; };
 		95FC3BB78DDD71C4EA68B45E /* ThumbnailGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 288DE4E55BF9D9CB0865F237 /* ThumbnailGenerator.swift */; };
 		983AC0DA9F30BB2F5F87005A /* SearchHitRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D508E241AAB10D960AE4CC3 /* SearchHitRow.swift */; };
@@ -42,20 +49,24 @@
 		A9819D8861CB938BC8EEE2F6 /* SubtitleIndexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EAF2C6138232C1165DDAF32 /* SubtitleIndexer.swift */; };
 		A9E34E7A3316E0F7836E560E /* CourseCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478641B1A61CF979C226BA62 /* CourseCardView.swift */; };
 		ACE8DB211EAAB3E8B3281C11 /* CurriculumModuleRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36E0A2398ECBA8EDAF56B52D /* CurriculumModuleRow.swift */; };
+		AEF2788CCC93E0C2192474A9 /* MacCourseOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB181E30C033E71B5828C456 /* MacCourseOperations.swift */; };
+		B6D361F7920FD34B21FB4AD1 /* MacWelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62342D8FCAB64FAE75A79EA /* MacWelcomeView.swift */; };
 		BA98669F28F260CCCAFF69C4 /* SubtitleParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CD66B4C33802E4CBA3CF277 /* SubtitleParser.swift */; };
+		BC60666F0C8DE1B1A40A92B8 /* MacCourseDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9976C05147BCA6AB946CA7 /* MacCourseDetailView.swift */; };
 		BC9671D6FA2D2C9D977F3AD0 /* CourseAccentColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05511914277BFE47C9035804 /* CourseAccentColor.swift */; };
 		C1251CF529EBF3F85023A6F2 /* HtmlIndexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D7F92AC3B0016CD5E59FD8 /* HtmlIndexer.swift */; };
-		C91785828EF36A4D4177B304 /* SidecarStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E59B63665B7996435E2FB679 /* SidecarStore.swift */; };
 		CA61673AD1022B4B75FD8134 /* CoursePrimaryCTA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722298A0A2FA143553E6EB0E /* CoursePrimaryCTA.swift */; };
 		CCA0FD3ECFD737EF9A19D012 /* LibraryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F22319F993D121E691400787 /* LibraryStore.swift */; };
 		D17A640430F77FB744F1404F /* CourseDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CDFBD5C638DE34D2186F87 /* CourseDetailView.swift */; };
 		E6D854CCDF5914FF966A5EB2 /* SearchResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F033AF217C61D90DF353AC /* SearchResultsView.swift */; };
 		EB88B34E9DAD80CFB96803A7 /* SearchResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = F22D438853774422FCC0C1F7 /* SearchResult.swift */; };
 		EE169A01009A4AD16AF8F1F9 /* CourseIndexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A80B9948812EF94F18380C8 /* CourseIndexer.swift */; };
+		FBEECB7C1110246B5F201633 /* MacLibraryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A026FFEC7BC57C2DDA0DB060 /* MacLibraryStore.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		05511914277BFE47C9035804 /* CourseAccentColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseAccentColor.swift; sourceTree = "<group>"; };
+		0666A528660AB2AC41ADDCA7 /* BrandColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrandColors.swift; sourceTree = "<group>"; };
 		07D7F92AC3B0016CD5E59FD8 /* HtmlIndexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HtmlIndexer.swift; sourceTree = "<group>"; };
 		09E197E1D5F82A730F788AB6 /* CoverImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverImageLoader.swift; sourceTree = "<group>"; };
 		0D143650172A9765142D3E3A /* CursosIpadApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CursosIpadApp.swift; sourceTree = "<group>"; };
@@ -70,7 +81,8 @@
 		36E0A2398ECBA8EDAF56B52D /* CurriculumModuleRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurriculumModuleRow.swift; sourceTree = "<group>"; };
 		36F84181D3B6B19FB49E69C7 /* HTMLViewerRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLViewerRepresentable.swift; sourceTree = "<group>"; };
 		39D915D3004D7055000EF9A1 /* CourseFilesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseFilesView.swift; sourceTree = "<group>"; };
-		3C09071BDDE6DB1F3DEB5474 /* CursosIpad.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = CursosIpad.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3C09071BDDE6DB1F3DEB5474 /* CursosIpad.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CursosIpad.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3E6577613ED0485457F61735 /* MacCoverColorExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacCoverColorExtractor.swift; sourceTree = "<group>"; };
 		41CBB816DF3D7AB0D32B9515 /* CoverColorExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverColorExtractor.swift; sourceTree = "<group>"; };
 		4780CC8A07F665B92053BD86 /* CourseDescriptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseDescriptionView.swift; sourceTree = "<group>"; };
 		478641B1A61CF979C226BA62 /* CourseCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseCardView.swift; sourceTree = "<group>"; };
@@ -80,25 +92,33 @@
 		582D604610D451E0F953D6C5 /* SearchIndexingBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchIndexingBanner.swift; sourceTree = "<group>"; };
 		690B1DBA4364BE0ADF980C19 /* BrandColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrandColors.swift; sourceTree = "<group>"; };
 		6D13464D888BF90879222713 /* HTMLViewerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLViewerView.swift; sourceTree = "<group>"; };
+		6D72E197333F5A23644861F7 /* MacCourseIndexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacCourseIndexer.swift; sourceTree = "<group>"; };
 		6F6A3CA20A91EBD942B6CFDB /* SearchIndexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchIndexer.swift; sourceTree = "<group>"; };
 		722298A0A2FA143553E6EB0E /* CoursePrimaryCTA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoursePrimaryCTA.swift; sourceTree = "<group>"; };
+		8178C99919E2F57F4EC25C51 /* CourseAccentColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseAccentColor.swift; sourceTree = "<group>"; };
 		834E5A47C350B9FF24F23BB6 /* CurriculumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurriculumView.swift; sourceTree = "<group>"; };
 		834F243046A11F392D7DD31D /* CourseHeroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseHeroView.swift; sourceTree = "<group>"; };
+		867AF7888C625F9241094AC5 /* MacSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacSettings.swift; sourceTree = "<group>"; };
 		86E06083B71B9B1CB14911EA /* VideoThumbnailLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoThumbnailLoader.swift; sourceTree = "<group>"; };
-		8A35C371F8F3E90F66712DDA /* Shared */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Shared; path = Shared; sourceTree = SOURCE_ROOT; };
+		8A35C371F8F3E90F66712DDA /* Shared */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Shared; sourceTree = SOURCE_ROOT; };
 		8BAC86969C10E234997C39C6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		955CB0FEF409426B08E6A378 /* VideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerView.swift; sourceTree = "<group>"; };
 		9EAF2C6138232C1165DDAF32 /* SubtitleIndexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleIndexer.swift; sourceTree = "<group>"; };
+		A026FFEC7BC57C2DDA0DB060 /* MacLibraryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacLibraryStore.swift; sourceTree = "<group>"; };
 		A5F033AF217C61D90DF353AC /* SearchResultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultsView.swift; sourceTree = "<group>"; };
 		AD2D0B1A8B02D8DB1587DF70 /* LibraryEmptyState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryEmptyState.swift; sourceTree = "<group>"; };
+		AD9976C05147BCA6AB946CA7 /* MacCourseDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacCourseDetailView.swift; sourceTree = "<group>"; };
+		ADF1621103A6F52D8906042C /* MacSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacSettingsView.swift; sourceTree = "<group>"; };
 		B35530200F6DF4AB4F41737D /* SearchIndexDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchIndexDatabase.swift; sourceTree = "<group>"; };
+		B61104C957BC3C70D13FC557 /* MacLibrarySidebar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacLibrarySidebar.swift; sourceTree = "<group>"; };
+		B62342D8FCAB64FAE75A79EA /* MacWelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacWelcomeView.swift; sourceTree = "<group>"; };
 		B64F3388BDAB04D4708659E7 /* DebugLibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugLibraryView.swift; sourceTree = "<group>"; };
 		C2CDFBD5C638DE34D2186F87 /* CourseDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseDetailView.swift; sourceTree = "<group>"; };
 		C8307977621F03519697085F /* PDFViewerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFViewerView.swift; sourceTree = "<group>"; };
 		CB2D13A575291A3F4A1DF59C /* SearchPositionBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchPositionBanner.swift; sourceTree = "<group>"; };
 		D0F6BE1CE5D2C8257BBCDBA7 /* DetailTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailTab.swift; sourceTree = "<group>"; };
 		DCC09C4B08A671C054BB72C9 /* SearchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchService.swift; sourceTree = "<group>"; };
-		E59B63665B7996435E2FB679 /* SidecarStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidecarStore.swift; sourceTree = "<group>"; };
+		EB181E30C033E71B5828C456 /* MacCourseOperations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacCourseOperations.swift; sourceTree = "<group>"; };
 		EF2F5408C5436652672BEEE2 /* PDFViewerRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFViewerRepresentable.swift; sourceTree = "<group>"; };
 		F22319F993D121E691400787 /* LibraryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryStore.swift; sourceTree = "<group>"; };
 		F22D438853774422FCC0C1F7 /* SearchResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResult.swift; sourceTree = "<group>"; };
@@ -125,6 +145,26 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0663938C3ACE0DFAB1113F46 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				867AF7888C625F9241094AC5 /* MacSettings.swift */,
+				ADF1621103A6F52D8906042C /* MacSettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		0C00D945B11F7EAC64323A5F /* Library */ = {
+			isa = PBXGroup;
+			children = (
+				6D72E197333F5A23644861F7 /* MacCourseIndexer.swift */,
+				EB181E30C033E71B5828C456 /* MacCourseOperations.swift */,
+				3E6577613ED0485457F61735 /* MacCoverColorExtractor.swift */,
+				A026FFEC7BC57C2DDA0DB060 /* MacLibraryStore.swift */,
+			);
+			path = Library;
+			sourceTree = "<group>";
+		};
 		28857AA967281A77298C1E98 /* Library */ = {
 			isa = PBXGroup;
 			children = (
@@ -132,7 +172,6 @@
 				41CBB816DF3D7AB0D32B9515 /* CoverColorExtractor.swift */,
 				09E197E1D5F82A730F788AB6 /* CoverImageLoader.swift */,
 				F22319F993D121E691400787 /* LibraryStore.swift */,
-				E59B63665B7996435E2FB679 /* SidecarStore.swift */,
 			);
 			path = Library;
 			sourceTree = "<group>";
@@ -140,6 +179,10 @@
 		32179ECE22E6855DF526748C /* macOS */ = {
 			isa = PBXGroup;
 			children = (
+				0C00D945B11F7EAC64323A5F /* Library */,
+				0663938C3ACE0DFAB1113F46 /* Settings */,
+				C80B36A7E2D71FFC5D8E2D97 /* Theme */,
+				915A7399292C9A88A0080FE1 /* Views */,
 				0EB79334C67F08618166961B /* CursosIpadMacApp.swift */,
 				8BAC86969C10E234997C39C6 /* Info.plist */,
 			);
@@ -179,6 +222,16 @@
 				8A35C371F8F3E90F66712DDA /* Shared */,
 			);
 			name = Packages;
+			sourceTree = "<group>";
+		};
+		915A7399292C9A88A0080FE1 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				AD9976C05147BCA6AB946CA7 /* MacCourseDetailView.swift */,
+				B61104C957BC3C70D13FC557 /* MacLibrarySidebar.swift */,
+				B62342D8FCAB64FAE75A79EA /* MacWelcomeView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		9ACF641C45AD187E8146A497 /* Theme */ = {
@@ -229,6 +282,15 @@
 				5BE392F5C518F42A8C0F3266 /* Packages */,
 				CEF42C1D55599742ED4285A1 /* Products */,
 			);
+			sourceTree = "<group>";
+		};
+		C80B36A7E2D71FFC5D8E2D97 /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				0666A528660AB2AC41ADDCA7 /* BrandColors.swift */,
+				8178C99919E2F57F4EC25C51 /* CourseAccentColor.swift */,
+			);
+			path = Theme;
 			sourceTree = "<group>";
 		};
 		CB4B19CCC85D6A3361A7FB45 /* iOS */ = {
@@ -325,11 +387,7 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
-					55A6B771674B736DF873BD86 = {
-						DevelopmentTeam = "";
-					};
 					8E81DB7FD8A46A527BDECD7A = {
-						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -362,7 +420,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				06B5B1FABE94C36D9E43C2AB /* BrandColors.swift in Sources */,
+				5DD05F2666E99F2C70E368D1 /* CourseAccentColor.swift in Sources */,
 				0B2A390FCC5B5B254AA8E704 /* CursosIpadMacApp.swift in Sources */,
+				BC60666F0C8DE1B1A40A92B8 /* MacCourseDetailView.swift in Sources */,
+				5B7B068242E35889733CE1E9 /* MacCourseIndexer.swift in Sources */,
+				AEF2788CCC93E0C2192474A9 /* MacCourseOperations.swift in Sources */,
+				8BCC4FF3817872EA0930EDE3 /* MacCoverColorExtractor.swift in Sources */,
+				79E6FE7EA237C373D2C562FC /* MacLibrarySidebar.swift in Sources */,
+				FBEECB7C1110246B5F201633 /* MacLibraryStore.swift in Sources */,
+				58C0706464BA043AA02755F7 /* MacSettings.swift in Sources */,
+				46D39D630A8C009FF9BD2F46 /* MacSettingsView.swift in Sources */,
+				B6D361F7920FD34B21FB4AD1 /* MacWelcomeView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -403,7 +472,6 @@
 				EB88B34E9DAD80CFB96803A7 /* SearchResult.swift in Sources */,
 				E6D854CCDF5914FF966A5EB2 /* SearchResultsView.swift in Sources */,
 				8826D81F88AD3B95C446BB34 /* SearchService.swift in Sources */,
-				C91785828EF36A4D4177B304 /* SidecarStore.swift in Sources */,
 				405CF670E9C66BC0191E4C4D /* SubtitleCue.swift in Sources */,
 				A9819D8861CB938BC8EEE2F6 /* SubtitleIndexer.swift in Sources */,
 				BA98669F28F260CCCAFF69C4 /* SubtitleParser.swift in Sources */,
@@ -424,6 +492,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = LJZDEXR7VS;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = macOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -509,6 +578,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = LJZDEXR7VS;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = macOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -586,6 +656,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = LJZDEXR7VS;
 				INFOPLIST_FILE = iOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -602,6 +673,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = LJZDEXR7VS;
 				INFOPLIST_FILE = iOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

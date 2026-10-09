@@ -1,10 +1,12 @@
 // SidecarStore.swift
 //
-// iOS-side read/write/merge logic for `.cursosIpad.json`. The on-disk
-// schema lives in `Shared.Sidecar` (see header for the contract).
-// This file is iOS-only because the macOS app will get its own
-// `SidecarStore` in Fase 10; until then the macOS target doesn't
-// persist any progress.
+// Read/write/merge logic for `.cursosIpad.json`. The on-disk schema
+// lives in `Shared.Sidecar` (see header for the contract). This file
+// is shared between the iOS and macOS targets so both apps use the
+// same encoder/decoder, atomic-write path, and `.bak` corruption
+// recovery — Fase 9 moves it here from `iOS/Library/` because the
+// macOS editor (Fase 9) needs to persist the same JSON the iOS app
+// reads on its first index of a transferred course.
 //
 // **Public surface is a stateless namespace** (enum), mirroring
 // `CoverColorExtractor` (`iOS/Library/CoverColorExtractor.swift:21`).
@@ -35,7 +37,6 @@
 // seeded sidecar.
 
 import Foundation
-import Shared
 
 public enum SidecarStore {
 
