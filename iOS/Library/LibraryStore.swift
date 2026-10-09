@@ -142,8 +142,10 @@ final class LibraryStore: ObservableObject {
             for: .documentDirectory,
             in: .userDomainMask
         ).first else { return nil }
+        // Courses live directly under `Documents/` (plan §9). What
+        // the user drags into the app's File Sharing location in
+        // Finder is exactly what shows up in the library.
         return docs
-            .appendingPathComponent("Cursos", isDirectory: true)
             .appendingPathComponent(course.folderName, isDirectory: true)
     }
 
@@ -356,7 +358,8 @@ final class LibraryStore: ObservableObject {
         let dbURL = dir.appendingPathComponent("index.sqlite")
         let coursesRoot: URL
         if let docs = fm.urls(for: .documentDirectory, in: .userDomainMask).first {
-            coursesRoot = docs.appendingPathComponent("Cursos", isDirectory: true)
+            // Courses live directly under `Documents/` (see CourseIndexer.Configuration).
+            coursesRoot = docs
         } else {
             return nil
         }

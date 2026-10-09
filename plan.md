@@ -239,14 +239,14 @@ dónde se quedó en cada uno.
 │  │  Biblioteca ─▶ Visor PDF ─▶ Visor HTML ─▶ Reproductor Video    │    │
 │  │      │                                                        │             │    │
 │  │      ▼                                                        │             │    │
-│  │  Indexador de cursos (escanea Documents/Cursos)                │             │    │
+│  │  Indexador de cursos (escanea Documents/)                      │             │    │
 │  │      │                                                        │             │    │
 │  │      ▼                                                        │             │    │
 │  │  Lector/escritor del sidecar .cursosIpad.json                  │             │    │
 │  └──────────────────────────────────────────────────────────────┘    │
 │      ▲                                                             ▲    │
 │      │ lee/escribe archivos en                                      │    │
-│      ▼ Documents/Cursos/ (expuesto en app Archivos + WiFi server)    │    │
+│      ▼ Documents/ (expuesto en app Archivos + WiFi server)         │    │
 │  ┌──────────────────────────────────────────────────────────────┐    │
 │  │  Servidor HTTP local (solo cuando recibe transferencia)        │    │
 │  │  Anuncia servicio Bonjour _cursosipad._tcp                    │    │
@@ -359,7 +359,7 @@ Mi Curso de Python/                       ← nombre = título del curso
 
 ### Reglas de detección
 
-- **Curso:** cualquier carpeta dentro de `Documents/Cursos/` (en iOS) o de la carpeta de biblioteca de la Mac.
+- **Curso:** cualquier carpeta de primer nivel dentro de `Documents/` (en iOS) o de la carpeta de biblioteca de la Mac. Cada carpeta de curso queda directamente en la raíz de `Documents/`, no anidada en una subcarpeta intermedia — eso hace que arrastrar desde Finder/Archivos quede donde el indexador mira (ver §19, decisión cerrada de ruta).
 - **Módulo:** cada subcarpeta de primer nivel del curso. Los archivos sueltos en la raíz forman un "módulo" virtual llamado "General" (o no se agrupan — **⚠️ por decidir**).
 - **Tipo de archivo por extensión:**
   - Video: `.mp4 .mov .m4v .webm`
@@ -403,7 +403,8 @@ Cada request `POST /api/courses` envía:
 
 **Por qué ZIP:** transferir miles de archivos por HTTP tiene mucho overhead
 (miles de conexiones, milisegundos por archivo). Un solo ZIP baja mucho el
-tiempo total. La iPad lo descomprime en su `Documents/Cursos/<nombre>/`.
+tiempo total. La iPad lo descomprime en su `Documents/<nombre>/`
+(raíz del sandbox, sin subcarpeta intermedia — ver §9).
 
 ### Progreso y retroalimentación
 
@@ -961,7 +962,7 @@ insertó como Fase 3 al detectar que faltaba cubrirla explícitamente.
   - [x] `ItemType` enum (`.video`, `.pdf`, `.html`)
   - [x] `ItemProgress.swift` (lastViewedAt, positionSeconds, lastPage, isCompleted, completionMarkedAt)
 - [x] `CourseIndexer` en iOS:
-  - [x] Escanea `Documents/Cursos/` recursivamente
+  - [x] Escanea `Documents/` recursivamente (cada carpeta de primer nivel = un curso; ver §9 y §19)
   - [x] Detecta módulos = subcarpetas de primer nivel
   - [x] Detecta tipo por extensión (.mp4/.mov/.m4v/.webm/.pdf/.html/.htm)
   - [x] Detecta cover.jpg/cover.png/primera imagen en raíz
@@ -969,7 +970,7 @@ insertó como Fase 3 al detectar que faltaba cubrirla explícitamente.
   - [x] Devuelve `[Course]` ordenado por nombre
 - [x] Pantalla de debug en iOS que muestra la lista cruda de cursos
 
-**Entregable:** abrir la app y ver los nombres de las carpetas de cursos en `Documents/Cursos/`.
+**Entregable:** abrir la app y ver los nombres de las carpetas de cursos en `Documents/`.
 
 ---
 
@@ -1245,7 +1246,7 @@ insertó como Fase 3 al detectar que faltaba cubrirla explícitamente.
 - [ ] iOS: servidor HTTP (⚠️ Swifter vs NWListener custom)
   - [ ] `GET /api/ping` → devuelve versión
   - [ ] `POST /api/courses` con multipart (metadata JSON + ZIP)
-- [ ] iOS: descomprime ZIP en `Documents/Cursos/<nombre>/` (⚠️ ZIPFoundation)
+- [ ] iOS: descomprime ZIP en `Documents/<nombre>/` (⚠️ ZIPFoundation)
 - [ ] iOS: actualiza indexador al terminar transferencia
 - [ ] macOS: `NWBrowser` descubre servicios `_cursosipad._tcp`
 - [ ] macOS: UI muestra dispositivos detectados (Bonjour)
@@ -1263,7 +1264,7 @@ insertó como Fase 3 al detectar que faltaba cubrirla explícitamente.
 **Checklist:**
 
 - [ ] Indexador iOS corre al abrir la app (no solo primer launch)
-- [ ] Re-escaneo automático al detectar cambios en `Documents/Cursos/`
+- [ ] Re-escaneo automático al detectar cambios en `Documents/`
 - [ ] Verificar que arrastrar carpetas en Finder → iPad → app funciona
 - [ ] Verificar que la app Archivos ve los cursos (file sharing habilitado)
 
@@ -1349,6 +1350,23 @@ Para confirmar que nada del §4 (Alcance MVP) quedó sin cubrir:
 | ⚠️ 5 | Ruta por defecto en Mac | ¿`~/Movies/CursosIpad/` o preguntar siempre? | Nulo. |
 | ⚠️ 6 | Módulo virtual "General" | ¿Archivos sueltos en la raíz forman módulo o se ocultan? | Bajo — UX. |
 | ⚠️ 7 | Color de acento | ¿Extraer color dominante de la portada (`UIImage`) o usar color fijo? | Bajo — UX. |
+
+### Decisiones cerradas (referencia)
+
+Esta sección documenta decisiones que empezaron como ⚠️ y se resolvieron, para
+que el contrato quede escrito en un solo lugar y no se reabra la conversación.
+
+- **Ruta raíz de cursos en iOS** (resuelta al implementar la transferencia
+  USB Finder, 2026-10-09): `Documents/Cursos/` → **`Documents/`** directo.
+  Motivo: lo que aparece en Finder/Archivos bajo `cursosIpad` ES la raíz de
+  `Documents/`; pedirle al usuario crear una subcarpeta `Cursos/` adentro
+  rompe el flujo natural de "arrastro el curso y listo". La constante
+  `CourseIndexer.Configuration.documentsSubdirectory` quedó como opt-in
+  (default `""`) por si en el futuro se quiere volver a la jerarquía.
+  Impacto en otros componentes: `LibraryStore.courseDirectoryURL(for:)`
+  y `SearchIndexer.coursesRoot` también resolvieron al nuevo root.
+  Implementación Fase 11 (servidor HTTP) debe descomprimir en
+  `Documents/<nombre>/`, no en `Documents/Cursos/<nombre>/`.
 
 ---
 

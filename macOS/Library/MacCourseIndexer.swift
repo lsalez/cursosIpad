@@ -8,8 +8,8 @@
 //
 //   * **Root is configurable.** The library store owns the path and
 //     passes it in via `Configuration.libraryURL`. iOS hardcodes
-//     `Documents/Cursos/` because the OS puts the app there; the Mac
-//     user picks wherever they keep their downloads.
+//     `Documents/` (the app sandbox root) because the OS puts the app
+//     there; the Mac user picks wherever they keep their downloads.
 //
 //   * **No `AVAsset` pass.** The Mac editor doesn't display video
 //     durations anywhere (Fase 10 may want them for the editor UI),

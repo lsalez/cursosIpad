@@ -238,14 +238,14 @@ public enum SidecarStore {
     /// didn't pass a `FileManager` explicitly. The default `.default`
     /// is fine for in-memory snapshots; we resolve the URL only.
     private static func courseURL(for course: Course, fileManager: FileManager) -> URL? {
-        // Reuse the production URL logic from LibraryStore by going
-        // through the file manager's standard documents lookup.
+        // Courses live directly under `Documents/`, mirroring the
+        // iOS indexer's layout (plan §9). Kept in sync with
+        // `LibraryStore.courseDirectoryURL(for:)`.
         guard let docs = fileManager.urls(
             for: .documentDirectory,
             in: .userDomainMask
         ).first else { return nil }
         return docs
-            .appendingPathComponent("Cursos", isDirectory: true)
             .appendingPathComponent(course.folderName, isDirectory: true)
     }
 }

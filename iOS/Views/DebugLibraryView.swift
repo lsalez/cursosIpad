@@ -1,6 +1,6 @@
 // DebugLibraryView.swift
 //
-// Fase 1 deliverable: list courses found in `Documents/Cursos/`. Real
+// Fase 1 deliverable: list courses found in `Documents/`. Real
 // library UI lands in Fase 2 (grid, palettes, tags filter, etc.) — what
 // sits here is enough to prove the indexer works end-to-end.
 //

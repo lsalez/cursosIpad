@@ -1,8 +1,18 @@
 // CourseIndexer.swift
 //
-// Walks `Documents/Cursos/` and returns a `[Course]` snapshot of what's
-// there right now. Plan §9 has the detection rules; this file is the
-// concrete implementation.
+// Walks the iOS app's `Documents/` directory and returns a `[Course]`
+// snapshot of what's there right now. Each immediate subfolder of
+// `Documents/` is treated as a course (if its name doesn't start with
+// a dot). Plan §9 has the detection rules; this file is the concrete
+// implementation.
+//
+// Decision history: earlier revisions kept courses under a
+// `Documents/Cursos/` subfolder, but in practice that meant USB
+// transfers from Finder needed to land in `cursosIpad/Cursos/<course>/`
+// instead of `cursosIpad/<course>/`. The subfolder was dropped —
+// the indexer now scans `Documents/` directly so that what the user
+// drags into the app's File Sharing location is exactly what shows
+// up in the library. See plan §9 and §19 for the decision.
 //
 // Lives in the iOS target (not in `Shared/`) because the indexer is
 // application logic on top of the model layer, and the macOS app will
@@ -23,7 +33,13 @@ import Shared
 
 public actor CourseIndexer {
     public struct Configuration: Sendable {
-        public var documentsDirectoryName: String = "Cursos"
+        /// Subdirectory inside `Documents/` to scan. Default is `""`
+        /// (empty), which means the indexer scans `Documents/` itself.
+        /// Any non-empty value keeps the legacy nested layout
+        /// (`Documents/<name>/<courses>`) — useful for tests or for a
+        /// future "isolate course content from other app files" mode,
+        /// but not used in production.
+        public var documentsSubdirectory: String = ""
         public init() {}
     }
 
@@ -38,9 +54,10 @@ public actor CourseIndexer {
         self.fileManager = fileManager
     }
 
-    /// Index `Documents/Cursos/`. Returns an empty array if the directory
-    /// doesn't exist yet (first launch). Sorted by `folderName` using
-    /// `localizedStandardCompare`.
+    /// Index the courses root (see `Configuration.documentsSubdirectory`).
+    /// Returns an empty array if the directory doesn't exist yet (first
+    /// launch, or `Documents/` was just created). Sorted by `folderName`
+    /// using `localizedStandardCompare`.
     public func index() async throws -> [Course] {
         let coursesRoot = try resolveCoursesRoot()
         guard let coursesRoot else { return [] }
@@ -58,16 +75,16 @@ public actor CourseIndexer {
         ).first else {
             return nil
         }
-        let cursos = docs.appendingPathComponent(
-            configuration.documentsDirectoryName,
-            isDirectory: true
-        )
+        let subdirectory = configuration.documentsSubdirectory
+        let root: URL = subdirectory.isEmpty
+            ? docs
+            : docs.appendingPathComponent(subdirectory, isDirectory: true)
         var isDir: ObjCBool = false
-        guard fileManager.fileExists(atPath: cursos.path, isDirectory: &isDir),
+        guard fileManager.fileExists(atPath: root.path, isDirectory: &isDir),
               isDir.boolValue else {
             return nil
         }
-        return cursos
+        return root
     }
 
     private func indexDirectory(at coursesRoot: URL) async throws -> [Course] {

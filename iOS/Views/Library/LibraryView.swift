@@ -266,8 +266,9 @@ struct LibraryView: View {
         guard let docs = FileManager.default.urls(
             for: .documentDirectory, in: .userDomainMask
         ).first else { return }
-        let path = docs.appendingPathComponent("Cursos", isDirectory: true).path
-        pendingAlertMessage = "Tus cursos viven en:\n\(path)\n\nAgrégalos desde la app Archivos."
+        // Courses live directly under `Documents/`; this is the
+        // folder exposed in the system Files app under "On My iPad".
+        pendingAlertMessage = "Tus cursos viven en:\n\(docs.path)\n\nAgrégalos desde la app Archivos."
     }
 }
 

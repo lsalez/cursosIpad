@@ -13,7 +13,7 @@
 //     want to keep the absolute form (not the bookmark form) so
 //     the user can move the folder and we re-resolve on launch
 //     via `URL.path` checks. That's the same behavior the iOS app
-//     has with `Documents/Cursos/`.
+//     has with `Documents/`.
 //
 // The default (`~/Movies/CursosIpad/`) lives here so a fresh
 // `MacLibraryStore()` knows where to look without any user

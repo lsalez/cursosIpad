@@ -2,7 +2,7 @@
 //
 // Loads course cover images on demand, with an in-memory cache. The
 // covers live inside the course folder
-// (`Documents/Cursos/<name>/cover.jpg`), so the cache is keyed by the
+// (`Documents/<name>/cover.jpg`), so the cache is keyed by the
 // absolute file URL — that survives re-scans of the courses directory
 // without us having to invalidate by course id.
 //
