@@ -10,7 +10,7 @@ consumir cursos con seguimiento de progreso.
 
 ## Progreso
 
-**Fase actual:** Fase 9 — Biblioteca macOS + importador · **% global:** 64% · **Última act.:** 2026-10-08
+**Fase actual:** Fase 10 — Editor de curso (Mac) · **% global:** 71% · **Última act.:** 2026-10-09
 
 | # | Fase | Estado | Cerrada |
 |---|------|--------|---------|
@@ -23,7 +23,7 @@ consumir cursos con seguimiento de progreso.
 | 6 | Reproductor de video | ✅ | 2026-10-08 |
 | 7 | Visor PDF | ✅ | 2026-10-08 |
 | 8 | Visor HTML | ✅ | 2026-10-08 |
-| 9 | Biblioteca macOS + importador | ⬜ | — |
+| 9 | Biblioteca macOS + importador | ✅ | 2026-10-09 |
 | 10 | Editor de curso (Mac) | ⬜ | — |
 | 11 | Transferencia por WiFi | ⬜ | — |
 | 12 | Detección por USB | ⬜ | — |
@@ -1186,13 +1186,22 @@ insertó como Fase 3 al detectar que faltaba cubrirla explícitamente.
 
 **Checklist:**
 
-- [ ] `LibraryView` macOS lista carpetas de cursos en `~/Movies/CursosIpad/` (configurable)
-- [ ] `NSOpenPanel` para importar curso (arrastrar o abrir)
-- [ ] Editar título del curso
-- [ ] Editar portada (auto-detectar o elegir imagen)
-- [ ] Editar descripción (textarea opcional)
+- [x] `LibraryView` macOS lista carpetas de cursos en `~/Movies/CursosIpad/` (configurable)
+- [x] `NSOpenPanel` para importar curso (arrastrar o abrir)
+- [x] Editar título del curso
+- [x] Editar portada (auto-detectar o elegir imagen)
+- [x] Editar descripción (textarea opcional)
 
 **Entregable:** la app Mac ve y modifica cursos en su biblioteca.
+
+**Notas de implementación (desviaciones del plan original):**
+
+- `iOS/Library/SidecarStore.swift` se movió a `Shared/Sources/Shared/Sidecar/SidecarStore.swift`. Era Foundation-only desde el inicio (`URL`/`FileManager`/`JSONEncoder`), así que la mudanza lo hace accesible desde macOS sin duplicación — el Mac editor (Fase 9) persiste los mismos `.cursosIpad.json` que la app iOS lee en su primer index. Plan §19 todavía tiene `⚠️ por decidir` sobre la "ruta por defecto en Mac", resuelto aquí: `~/Movies/CursosIpad/` (almacenada en `UserDefaults`).
+- El editor Mac escribe `title`/`description`/`coverFileName` al sidecar, pero iOS `SidecarStore.apply()` sigue consumiendo solo `courseId` + progress por ítem (contrato de Fase 5). El `apply()` se ampliará en Fase 10 según el plan, no en Fase 9 — la justificación es que sin transferencia (Fase 11) la inconsistencia es invisible y abre Fase 10 con un solo diff enfocado.
+- `MacCourseIndexer` corre sin pasada de `AVAsset` (a diferencia de iOS) porque el editor Mac no muestra duraciones en ningún lado de Fase 9; las duraciones se calculan on-demand en Fase 10 cuando el preview de video las necesite.
+- `Color.appBackground`/etc. para macOS se implementan con `NSColor(name:dynamicProvider:)` — el equivalente UIKit de `UIColor(dynamicProvider:)` no existe, así que cada token macOS es su propio provider. `Color.themeAdjusted(from:)` para macOS usa `NSColor.getHue` (que devuelve `Void` en AppKit — distinto de `UIColor` que devuelve `Bool`).
+- `MacCourseOperations` aísla toda la lógica de `NSOpenPanel`/filesystem fuera de las views para que las views queden declarativas y las operaciones sean independientemente testeables.
+- El Mac app no incluye un flag `hasSeenWelcome` como iOS: la `WindowGroup` siempre muestra la biblioteca, y si está vacía se renderiza `MacWelcomeView` con los botones Importar / Elegir carpeta. No hay carrusel de onboarding que descartar.
 
 ---
 
