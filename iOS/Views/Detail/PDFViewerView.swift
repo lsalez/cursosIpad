@@ -88,6 +88,12 @@ struct PDFViewerView: View {
     /// expand / contract button in the top bar.
     @State private var isFullscreen: Bool = false
 
+    /// Tab activa en la columna derecha del `iPadSplit`. Mismas
+    /// tres pestañas que `CourseDetailView` (Contenido /
+    /// Descripción / Archivos) — replica lo que hace
+    /// `VideoPlayerView` y `HTMLViewerView`.
+    @State private var selectedTab: DetailTab = .content
+
     // MARK: - Body
 
     var body: some View {
@@ -130,18 +136,61 @@ struct PDFViewerView: View {
 
             if !isFullscreen {
                 Divider().background(Color.appDivider)
-                CurriculumView(
-                    course: course,
-                    accent: Color.themeAdjusted(from: accentColor),
-                    highlightedItemID: item.id,
-                    courseDirectory: library.courseDirectoryURL(for: course),
-                    onTapLesson: onSelectLesson
-                )
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                // Misma forma que `VideoPlayerView.iPadSplit` /
+                // `HTMLViewerView.iPadSplit`: tres pestañas
+                // (Contenido / Descripción / Archivos) y el
+                // contenido de cada una dentro de un `ScrollView`
+                // único. Sin el scroll, el curriculum crecía fuera
+                // del panel con muchos videos.
+                VStack(spacing: 0) {
+                    tabPicker
+                        .padding(.horizontal, 16)
+                        .padding(.top, 16)
+                        .padding(.bottom, 8)
+                        .background(Color.appBackground)
+                    Divider().background(Color.appDivider)
+                    ScrollView {
+                        tabContent
+                            .padding(16)
+                    }
+                }
                 .transition(.move(edge: .trailing).combined(with: .opacity))
             }
         }
         .animation(.easeInOut(duration: 0.25), value: isFullscreen)
+    }
+
+    // MARK: - Tabs (shared)
+
+    private var tabPicker: some View {
+        Picker("Sección", selection: $selectedTab) {
+            ForEach(DetailTab.allCases) { tab in
+                Text(tab.title).tag(tab)
+            }
+        }
+        .pickerStyle(.segmented)
+    }
+
+    @ViewBuilder
+    private var tabContent: some View {
+        switch selectedTab {
+        case .content:
+            CurriculumView(
+                course: course,
+                accent: Color.themeAdjusted(from: accentColor),
+                highlightedItemID: item.id,
+                courseDirectory: library.courseDirectoryURL(for: course),
+                onTapLesson: onSelectLesson
+            )
+        case .description:
+            CourseDescriptionView(description: course.description)
+        case .files:
+            CourseFilesView(
+                course: course,
+                accent: Color.themeAdjusted(from: accentColor),
+                onTapItem: onSelectLesson
+            )
+        }
     }
 
     // MARK: - iPhone stack
@@ -177,17 +226,25 @@ struct PDFViewerView: View {
             .accessibilityLabel("Volver al curso")
             .buttonStyle(.plain)
 
-            VStack(alignment: .leading, spacing: 2) {
-                Text(item.title)
-                    .font(.system(size: 14, weight: .semibold, design: .rounded))
-                    .foregroundStyle(Color.appTitle)
-                    .lineLimit(1)
-                Text(course.title)
-                    .font(.system(size: 11))
-                    .foregroundStyle(Color.appInfo)
-                    .lineLimit(1)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            // El título del curso ya vive en la cabecera de navegación
+            // que aplica el `CourseDetailView` padre (`.navigationTitle`).
+            // Mostrarlo aquí generaría duplicación con esa cabecera;
+            // dejamos sólo el título de la lección como contexto
+            // "dentro del visor". Mismo patrón que `VideoPlayerView`
+            // y `HTMLViewerView`.
+            //
+            // `minimumScaleFactor` + `truncationMode(.tail)` para
+            // títulos largos — evita que se corten feo cuando el
+            // ancho disponible en el panel iPad sea chico por los
+            // botones a los lados (thumbnail + fullscreen +
+            // "Marcar como visto").
+            Text(item.title)
+                .font(.system(size: 14, weight: .semibold, design: .rounded))
+                .foregroundStyle(Color.appTitle)
+                .lineLimit(1)
+                .minimumScaleFactor(0.75)
+                .truncationMode(.tail)
+                .frame(maxWidth: .infinity, alignment: .leading)
 
             // Thumbnail toggle. Same icon family as the system's
             // PDFView thumbnail bar so users get visual continuity

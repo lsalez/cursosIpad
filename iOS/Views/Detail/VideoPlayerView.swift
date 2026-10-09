@@ -92,6 +92,14 @@ struct VideoPlayerView: View {
     /// failed, etc.) — replaces the chrome with an error message.
     @State private var loadError: String?
 
+    /// Tab activa en la columna derecha del `iPadSplit`. Mismas
+    /// tres pestañas que `CourseDetailView` (Contenido /
+    /// Descripción / Archivos) para que el usuario no pierda el
+    /// switch a "Descripción" o "Archivos" cuando entra al
+    /// reproductor. Default `.content` para mantener la UX del
+    /// reproductor apuntando al curriculum.
+    @State private var selectedTab: DetailTab = .content
+
     /// Periodic-time-observer token. Held on `@State` so the
     /// reference doesn't get dropped between body renders. Cleared
     /// in `tearDownPlayback` via `removeTimeObserver`.
@@ -124,7 +132,18 @@ struct VideoPlayerView: View {
             VStack(spacing: 0) {
                 topBar
                 Divider().background(Color.appDivider)
+                // Reproductor fijo arriba. Lo envolvemos en un
+                // `ScrollView` rompe el `AVPlayerViewController`
+                // (tamaño 0); por eso el player va fuera del scroll.
                 playerArea
+                Divider().background(Color.appDivider)
+                // Bloque "Acerca de / Recursos" fijo, debajo del
+                // video. NO se mete en `ScrollView`: esa fue la
+                // causa de varios intentos fallidos previos donde
+                // se rompía el layout del reproductor. Ver
+                // `iPhoneStack` para la versión equivalente en
+                // iPhone.
+                iPadInfoSection
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .frame(idealWidth: 460, maxWidth: 620)
@@ -132,6 +151,43 @@ struct VideoPlayerView: View {
 
             Divider().background(Color.appDivider)
 
+            // Columna derecha con las mismas tres pestañas que usa
+            // `CourseDetailView.iPadSplit` (Contenido / Descripción /
+            // Archivos). El contenido de cada tab va dentro de un
+            // `ScrollView` único — `CurriculumView` por sí sola es
+            // un `VStack { ForEach(...) }` sin scroll, así que con
+            // muchos videos la lista se desbordaba. El picker y el
+            // divider copian el patrón de `CourseDetailView`.
+            VStack(spacing: 0) {
+                tabPicker
+                    .padding(.horizontal, 16)
+                    .padding(.top, 16)
+                    .padding(.bottom, 8)
+                    .background(Color.appBackground)
+                Divider().background(Color.appDivider)
+                ScrollView {
+                    tabContent
+                        .padding(16)
+                }
+            }
+        }
+    }
+
+    // MARK: - Tabs (shared)
+
+    private var tabPicker: some View {
+        Picker("Sección", selection: $selectedTab) {
+            ForEach(DetailTab.allCases) { tab in
+                Text(tab.title).tag(tab)
+            }
+        }
+        .pickerStyle(.segmented)
+    }
+
+    @ViewBuilder
+    private var tabContent: some View {
+        switch selectedTab {
+        case .content:
             CurriculumView(
                 course: course,
                 accent: Color.themeAdjusted(from: accentColor),
@@ -139,7 +195,14 @@ struct VideoPlayerView: View {
                 courseDirectory: library.courseDirectoryURL(for: course),
                 onTapLesson: onSelectLesson
             )
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        case .description:
+            CourseDescriptionView(description: course.description)
+        case .files:
+            CourseFilesView(
+                course: course,
+                accent: Color.themeAdjusted(from: accentColor),
+                onTapItem: onSelectLesson
+            )
         }
     }
 
@@ -171,17 +234,24 @@ struct VideoPlayerView: View {
             .accessibilityLabel("Volver al curso")
             .buttonStyle(.plain)
 
-            VStack(alignment: .leading, spacing: 2) {
-                Text(item.title)
-                    .font(.system(size: 14, weight: .semibold, design: .rounded))
-                    .foregroundStyle(Color.appTitle)
-                    .lineLimit(1)
-                Text(course.title)
-                    .font(.system(size: 11))
-                    .foregroundStyle(Color.appInfo)
-                    .lineLimit(1)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            // El título del curso ya vive en la cabecera de navegación
+            // que aplica el `CourseDetailView` padre (`.navigationTitle`).
+            // Mostrarlo aquí generaría duplicación visual con esa
+            // cabecera, así que sólo dejamos el título de la lección
+            // como contexto "dentro del reproductor".
+            //
+            // `minimumScaleFactor` + `truncationMode(.tail)` para
+            // que un título largo no se "apriete" cortando glifos
+            // cuando el ancho disponible en el panel iPad sea chico
+            // (al lado del botón "Marcar como visto" puede dejar
+            // poco espacio).
+            Text(item.title)
+                .font(.system(size: 14, weight: .semibold, design: .rounded))
+                .foregroundStyle(Color.appTitle)
+                .lineLimit(1)
+                .minimumScaleFactor(0.75)
+                .truncationMode(.tail)
+                .frame(maxWidth: .infinity, alignment: .leading)
 
             Button {
                 library.markItemCompleted(
@@ -283,6 +353,33 @@ struct VideoPlayerView: View {
             Spacer()
         }
         .padding(16)
+    }
+
+    // MARK: - iPad info section
+
+    /// Bloque "Acerca de / Recursos" fijo bajo el reproductor en
+    /// iPad. Equivalente a `iPhoneInfoTabs` pero sin `Spacer()`
+    /// (no se mete en un stack con altura fija como en iPhone; aquí
+    /// va seguido de la lista de la derecha).
+    private var iPadInfoSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Acerca de")
+                .font(.system(size: 13, weight: .semibold, design: .rounded))
+                .foregroundStyle(Color.appTitle)
+            Text(descriptionText)
+                .font(.system(size: 13))
+                .foregroundStyle(Color.appInfo)
+            Text("Recursos")
+                .font(.system(size: 13, weight: .semibold, design: .rounded))
+                .foregroundStyle(Color.appTitle)
+                .padding(.top, 6)
+            Text(item.relativePath)
+                .font(.system(size: 12, design: .monospaced))
+                .foregroundStyle(Color.appInfo)
+        }
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.appBackground)
     }
 
     /// Stub for Fase 6: returns "Sin descripción" until Fase 10 wires
