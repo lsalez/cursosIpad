@@ -26,6 +26,7 @@ struct SearchResultsView: View {
     let results: SearchResults
     let store: LibraryStore
     let onSelectCourse: (Course) -> Void
+    let onSelectLesson: (LessonHit) -> Void
     let onSelectSubtitle: (SubtitleHit) -> Void
     let onSelectHtml: (HtmlHit) -> Void
 
@@ -45,6 +46,22 @@ struct SearchResultsView: View {
                             CourseCardView(course: course, store: store)
                         }
                         .buttonStyle(.plain)
+                    }
+                }
+            }
+
+            if !results.lessons.isEmpty {
+                sectionHeader(title: "Lecciones", count: results.lessons.count)
+                VStack(spacing: 8) {
+                    ForEach(results.lessons) { hit in
+                        SearchHitRow(
+                            title: hit.itemTitle,
+                            course: hit.course,
+                            store: store,
+                            chip: hit.itemTypeRaw,
+                            snippet: hit.snippet,
+                            onTap: { onSelectLesson(hit) }
+                        )
                     }
                 }
             }

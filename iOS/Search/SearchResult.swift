@@ -30,15 +30,18 @@ import SwiftUI
 
 public struct SearchResults: Equatable, Sendable {
     public var courses: [Course]
+    public var lessons: [LessonHit]
     public var subtitles: [SubtitleHit]
     public var htmls: [HtmlHit]
 
     public init(
         courses: [Course] = [],
+        lessons: [LessonHit] = [],
         subtitles: [SubtitleHit] = [],
         htmls: [HtmlHit] = []
     ) {
         self.courses = courses
+        self.lessons = lessons
         self.subtitles = subtitles
         self.htmls = htmls
     }
@@ -46,11 +49,41 @@ public struct SearchResults: Equatable, Sendable {
     public static let empty = SearchResults()
 
     public var isEmpty: Bool {
-        courses.isEmpty && subtitles.isEmpty && htmls.isEmpty
+        courses.isEmpty && lessons.isEmpty && subtitles.isEmpty && htmls.isEmpty
     }
 }
 
 // MARK: - Hit types
+
+/// A lesson whose **title** matched the query. Computed in-memory
+/// from `Course.allItems` alongside the course name match — no FTS5
+/// involved, because the indexer only seeds subtitle/HTML content,
+/// not file names. Snippet is the lesson title with the matched
+/// substring bolded and accented.
+public struct LessonHit: Identifiable, Equatable, Sendable {
+    public let id: UUID
+    public let course: Course
+    public let itemRelativePath: String
+    public let itemTitle: String
+    public let itemTypeRaw: String
+    public let snippet: AttributedString
+
+    public init(
+        id: UUID = UUID(),
+        course: Course,
+        itemRelativePath: String,
+        itemTitle: String,
+        itemTypeRaw: String,
+        snippet: AttributedString
+    ) {
+        self.id = id
+        self.course = course
+        self.itemRelativePath = itemRelativePath
+        self.itemTitle = itemTitle
+        self.itemTypeRaw = itemTypeRaw
+        self.snippet = snippet
+    }
+}
 
 public struct SubtitleHit: Identifiable, Equatable, Sendable {
     public let id: UUID

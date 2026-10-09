@@ -87,6 +87,22 @@ final class LibraryStore: ObservableObject {
         self.indexer = indexer
         self.fileManager = fileManager
         self.searchService = searchService
+        // The search service owns the FTS5 actor and its own
+        // `@Published` results. Forward them into the store so
+        // views can read `store.searchResults` / `isIndexing` /
+        // `indexProgress` without having to know about the service.
+        //
+        // `assign(to: &$prop)` owns the subscription inside the
+        // `@Published` storage, so the lifetime is tied to the
+        // store — when the store deallocates, the subscription
+        // dies with it. Both the service and the store are
+        // `@MainActor`, so every emission lands on the main
+        // thread and the UI updates are safe.
+        if let searchService {
+            searchService.$results.assign(to: &$searchResults)
+            searchService.$isIndexing.assign(to: &$isIndexing)
+            searchService.$indexProgress.assign(to: &$indexProgress)
+        }
     }
 
     // MARK: - Refresh + index

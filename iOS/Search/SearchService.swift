@@ -129,12 +129,17 @@ public final class SearchService: ObservableObject {
             return
         }
         // Name matches are computed synchronously and updated
-        // immediately so the "Cursos" section doesn't lag.
+        // immediately so the "Cursos" and "Lecciones" sections don't
+        // lag. The indexer only seeds subtitle/HTML content into
+        // FTS5, so lesson titles (which often differ from any
+        // indexed content) need their own in-memory pass.
         let nameMatches = courses.filter { course in
             course.title.localizedCaseInsensitiveContains(trimmed)
         }
+        let lessonMatches = Self.makeLessonHits(courses: courses, query: trimmed)
         results = SearchResults(
             courses: nameMatches,
+            lessons: lessonMatches,
             subtitles: results.subtitles,
             htmls: results.htmls
         )
@@ -160,7 +165,10 @@ public final class SearchService: ObservableObject {
     private func runFTSQuery(rawQuery: String, courses: [Course]) async {
         let ftsQuery = buildFTSQuery(from: rawQuery)
         guard !ftsQuery.isEmpty else {
-            results = SearchResults(courses: results.courses)
+            results = SearchResults(
+                courses: results.courses,
+                lessons: results.lessons
+            )
             return
         }
         do {
@@ -171,15 +179,17 @@ public final class SearchService: ObservableObject {
             let (subtitles, htmls) = enrich(hits: hits, courses: courses)
             results = SearchResults(
                 courses: results.courses,
+                lessons: results.lessons,
                 subtitles: subtitles,
                 htmls: htmls
             )
         } catch {
             print("[SearchService] FTS query failed: \(error)")
-            // On error, keep the courses matches but drop the FTS
-            // results. The user can re-type to retry.
+            // On error, keep the courses and lessons matches but
+            // drop the FTS results. The user can re-type to retry.
             results = SearchResults(
                 courses: results.courses,
+                lessons: results.lessons,
                 subtitles: [],
                 htmls: []
             )
@@ -198,6 +208,67 @@ public final class SearchService: ObservableObject {
             .filter { !$0.isEmpty }
         guard !tokens.isEmpty else { return "" }
         return tokens.map { "\($0)*" }.joined(separator: " ")
+    }
+
+    // MARK: - Lesson title match
+
+    /// Walk the course snapshot and return a `LessonHit` for every
+    /// item whose title contains `query` (case-insensitive). This
+    /// runs synchronously alongside the course-name match, so the
+    /// "Lecciones" section lights up the moment the user types —
+    /// no FTS5 debounce.
+    ///
+    /// Cost is `O(sum of allItems)` per call. For a typical iPad
+    /// library (low hundreds of items) this is sub-millisecond, so
+    /// we don't bother indexing titles into the FTS5 database; the
+    /// title is already in the in-memory `Course` snapshot the
+    /// indexer built on its filesystem walk.
+    private static func makeLessonHits(
+        courses: [Course],
+        query: String
+    ) -> [LessonHit] {
+        guard !query.isEmpty else { return [] }
+        var hits: [LessonHit] = []
+        for course in courses {
+            for item in course.allItems {
+                guard item.title.localizedCaseInsensitiveContains(query) else {
+                    continue
+                }
+                hits.append(
+                    LessonHit(
+                        course: course,
+                        itemRelativePath: item.relativePath,
+                        itemTitle: item.title,
+                        itemTypeRaw: item.type.rawValue,
+                        snippet: makeHighlightedTitle(item.title, query: query)
+                    )
+                )
+            }
+        }
+        return hits
+    }
+
+    /// Build an `AttributedString` of `text` with the first
+    /// case-insensitive occurrence of `query` bolded and accented.
+    /// Used for the lesson-title section, where we don't have the
+    /// FTS5 `<<`/`>>` delimiter pipeline that the subtitle/HTML
+    /// snippets use.
+    public static func makeHighlightedTitle(
+        _ text: String,
+        query: String
+    ) -> AttributedString {
+        var attributed = AttributedString(text)
+        guard !query.isEmpty,
+              let attrRange = attributed.range(
+                of: query,
+                options: .caseInsensitive
+              )
+        else {
+            return attributed
+        }
+        attributed[attrRange].font = .body.bold()
+        attributed[attrRange].foregroundColor = .accentColor
+        return attributed
     }
 
     // MARK: - Hit enrichment

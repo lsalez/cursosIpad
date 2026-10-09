@@ -34,6 +34,12 @@ struct LibraryView: View {
     /// doesn't update the iPad split-view detail column reliably.
     let onSelectCourse: (Course) -> Void
 
+    /// Called when the user taps a lesson-title search result (the
+    /// "Lecciones" section). The parent sets `store.highlightedItem`
+    /// so the detail view can scroll to the lesson and routes to
+    /// the course the same way as a card tap.
+    let onSelectLesson: (LessonHit) -> Void
+
     /// Called when the user taps a subtitle search result. The
     /// parent is responsible for setting
     /// `store.highlightedItem` / `store.pendingSearchPosition` and
@@ -173,6 +179,7 @@ struct LibraryView: View {
                 results: store.searchResults,
                 store: store,
                 onSelectCourse: onSelectCourse,
+                onSelectLesson: onSelectLesson,
                 onSelectSubtitle: onSelectSubtitle,
                 onSelectHtml: onSelectHtml
             )
