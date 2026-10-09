@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>cursosIpad</string>
+	<string>Cursos</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -29,6 +29,6 @@
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2026</string>
 	<key>NSLocalNetworkUsageDescription</key>
-	<string>cursosIpad usa tu red local para copiar cursos a tu iPad o iPhone.</string>
+	<string>Cursos usa tu red local para copiar cursos a tu iPad o iPhone.</string>
 </dict>
 </plist>

@@ -33,6 +33,7 @@
 		5DD05F2666E99F2C70E368D1 /* CourseAccentColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8178C99919E2F57F4EC25C51 /* CourseAccentColor.swift */; };
 		5FBCC6C695F9A6011D0A70AD /* CurriculumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 834E5A47C350B9FF24F23BB6 /* CurriculumView.swift */; };
 		6005447F98B737C87FECC6B3 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD9158EF0A6A6C0284754C31 /* WelcomeView.swift */; };
+		603FBB9B4F59ACB88617417C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1F133E124067DE64CFBCF852 /* Assets.xcassets */; };
 		697F374DA3A8E8365F13247D /* Shared in Frameworks */ = {isa = PBXBuildFile; productRef = 63AB7FC03545D42D12708026 /* Shared */; };
 		70A40ECB09806B5F9E350FEE /* CursosIpadApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D143650172A9765142D3E3A /* CursosIpadApp.swift */; };
 		74923B98DB1B3F9CCD2171AD /* PDFViewerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8307977621F03519697085F /* PDFViewerView.swift */; };
@@ -48,6 +49,7 @@
 		9BEBB224CD266A8484AF112A /* MacItemPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE758DF4FB88168282B93CCB /* MacItemPreview.swift */; };
 		A21A958EB83A1B3671FCB247 /* SearchIndexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A3CA20A91EBD942B6CFDB /* SearchIndexer.swift */; };
 		A23F571AB0BC9C3EF35E7128 /* TagChipField.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1EB63F2F321651BCD31F63 /* TagChipField.swift */; };
+		A308C0F358FB552012CC9A8A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1F133E124067DE64CFBCF852 /* Assets.xcassets */; };
 		A634D86E520C993735F79D5C /* LibraryEmptyState.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2D0B1A8B02D8DB1587DF70 /* LibraryEmptyState.swift */; };
 		A9819D8861CB938BC8EEE2F6 /* SubtitleIndexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EAF2C6138232C1165DDAF32 /* SubtitleIndexer.swift */; };
 		A9E34E7A3316E0F7836E560E /* CourseCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478641B1A61CF979C226BA62 /* CourseCardView.swift */; };
@@ -76,6 +78,7 @@
 		0D143650172A9765142D3E3A /* CursosIpadApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CursosIpadApp.swift; sourceTree = "<group>"; };
 		0EB79334C67F08618166961B /* CursosIpadMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CursosIpadMacApp.swift; sourceTree = "<group>"; };
 		158B96B3A820FD3E5DA9E940 /* SubtitleCue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleCue.swift; sourceTree = "<group>"; };
+		1F133E124067DE64CFBCF852 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		253A68D3133E014B411561B8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		288DE4E55BF9D9CB0865F237 /* ThumbnailGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThumbnailGenerator.swift; sourceTree = "<group>"; };
 		2A80B9948812EF94F18380C8 /* CourseIndexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseIndexer.swift; sourceTree = "<group>"; };
@@ -153,6 +156,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		013A7D1D81027E2D8B6A062D /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				1F133E124067DE64CFBCF852 /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		0663938C3ACE0DFAB1113F46 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
@@ -292,6 +303,7 @@
 				CB4B19CCC85D6A3361A7FB45 /* iOS */,
 				32179ECE22E6855DF526748C /* macOS */,
 				5BE392F5C518F42A8C0F3266 /* Packages */,
+				013A7D1D81027E2D8B6A062D /* Resources */,
 				CEF42C1D55599742ED4285A1 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -357,6 +369,7 @@
 			buildConfigurationList = 4F958A5F98F41923327083A7 /* Build configuration list for PBXNativeTarget "CursosIpad" */;
 			buildPhases = (
 				ACEBFF11641D6314BFB84B38 /* Sources */,
+				D6E469F0E776F3D3E768E561 /* Resources */,
 				C513BE77CFF0CA31B31860EF /* Frameworks */,
 			);
 			buildRules = (
@@ -376,6 +389,7 @@
 			buildConfigurationList = 34C8A9CB3FA49C31DF60A758 /* Build configuration list for PBXNativeTarget "CursosIpadMac" */;
 			buildPhases = (
 				28C67D2CBBECCA43122C1C94 /* Sources */,
+				2687477593B0F8B014C27721 /* Resources */,
 				93597748AADD74C06494A6BC /* Frameworks */,
 			);
 			buildRules = (
@@ -427,6 +441,25 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		2687477593B0F8B014C27721 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				603FBB9B4F59ACB88617417C /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D6E469F0E776F3D3E768E561 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A308C0F358FB552012CC9A8A /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		28C67D2CBBECCA43122C1C94 /* Sources */ = {

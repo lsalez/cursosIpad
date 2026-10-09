@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>cursosIpad</string>
+	<string>Cursos</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -27,7 +27,7 @@
 		<string>_cursosipad._tcp</string>
 	</array>
 	<key>NSLocalNetworkUsageDescription</key>
-	<string>cursosIpad usa tu red local para copiar cursos desde tu Mac.</string>
+	<string>Cursos usa tu red local para copiar cursos desde tu Mac.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>

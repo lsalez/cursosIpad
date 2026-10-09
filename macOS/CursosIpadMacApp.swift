@@ -32,7 +32,7 @@ struct CursosIpadMacApp: App {
     @StateObject private var library = MacLibraryStore()
 
     var body: some Scene {
-        WindowGroup("cursosIpad") {
+        WindowGroup("Cursos") {
             RootScene()
                 .environmentObject(library)
                 .frame(minWidth: 720, minHeight: 480)

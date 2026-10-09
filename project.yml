@@ -28,13 +28,14 @@ targets:
     platform: iOS
     sources:
       - path: iOS
+      - path: Resources
     dependencies:
       - package: Shared
         product: Shared
     info:
       path: iOS/Info.plist
       properties:
-        CFBundleDisplayName: cursosIpad
+        CFBundleDisplayName: Cursos
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
           - UIInterfaceOrientationLandscapeLeft
@@ -46,7 +47,7 @@ targets:
           - UIInterfaceOrientationLandscapeRight
         UIFileSharingEnabled: true
         LSSupportsOpeningDocumentsInPlace: true
-        NSLocalNetworkUsageDescription: "cursosIpad usa tu red local para copiar cursos desde tu Mac."
+        NSLocalNetworkUsageDescription: "Cursos usa tu red local para copiar cursos desde tu Mac."
         NSBonjourServices:
           - _cursosipad._tcp
         UIBackgroundModes:
@@ -55,23 +56,25 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: mx.salez.cursosipad
         TARGETED_DEVICE_FAMILY: "1,2"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
 
   CursosIpadMac:
     type: application
     platform: macOS
     sources:
       - path: macOS
+      - path: Resources
     dependencies:
       - package: Shared
         product: Shared
     info:
       path: macOS/Info.plist
       properties:
-        CFBundleDisplayName: cursosIpad
+        CFBundleDisplayName: Cursos
         CFBundleName: cursosIpad
         LSMinimumSystemVersion: "14.0"
         NSHumanReadableCopyright: "Copyright © 2026"
-        NSLocalNetworkUsageDescription: "cursosIpad usa tu red local para copiar cursos a tu iPad o iPhone."
+        NSLocalNetworkUsageDescription: "Cursos usa tu red local para copiar cursos a tu iPad o iPhone."
         NSBonjourServices:
           - _cursosipad._tcp
     settings:
@@ -80,6 +83,7 @@ targets:
         ENABLE_HARDENED_RUNTIME: YES
         CODE_SIGN_STYLE: Automatic
         COMBINE_HIDPI_IMAGES: YES
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
 
 schemes:
   CursosIpad:
