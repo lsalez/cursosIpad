@@ -308,12 +308,12 @@ struct CourseDetailView: View {
                 onTapLesson: handleOpenLesson
             )
         case .description:
-            // The Course model doesn't carry a description yet — the
-            // sidecar (Fase 5) is the source of truth. We pass `nil`,
-            // so the view always shows its "Sin descripción."
-            // placeholder. Fase 10 will widen this when the Mac
-            // editor populates `description` on the sidecar.
-            CourseDescriptionView(description: nil)
+            // As of Fase 10 the sidecar's `description` flows through
+            // `SidecarStore.apply` into the in-memory `Course`, so the
+            // Mac editor's prose shows up here. Empty / nil still
+            // renders the "Sin descripción." empty state inside
+            // `CourseDescriptionView`.
+            CourseDescriptionView(description: course.description)
         case .files:
             CourseFilesView(
                 course: course,

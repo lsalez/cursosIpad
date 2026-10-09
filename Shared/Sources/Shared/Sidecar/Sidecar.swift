@@ -14,15 +14,16 @@
 // Date encoding strategy (ISO8601) is centralized in `SidecarStore` —
 // read the comment there before changing the schema.
 //
-// **Contract boundary (Fase 5):**
-//   * On read, only `courseId` and the per-item `progress` are pulled
-//     into the in-memory `Course` via `SidecarStore.apply`. Other
-//     fields (`title`, `coverFileName`, `description`, `tags`) are
-//     seeded from the filesystem instead — that way renaming a folder
-//     in Finder flows through to the UI without a Mac editor round-trip.
-//   * On write, all fields are persisted; the in-memory `apply` only
-//     consumes a subset by design (Fase 10 will widen the consumed
-//     subset to `description` / `tags` once the Mac editor exists).
+// **Contract boundary (Fase 10):**
+//   * On read, `courseId`, `description`, `tags`, and per-item
+//     `progress` are pulled into the in-memory `Course` via
+//     `SidecarStore.apply`. The other fields (`title`,
+//     `coverFileName`) stay filesystem-derived so renaming a folder
+//     in Finder flows through to the UI without a Mac editor
+//     round-trip. (Fase 5 only consumed `courseId` + progress; Fase 10
+//     widens the consumed subset to include `description` and `tags`
+//     once the Mac editor exists.)
+//   * On write, all fields are persisted.
 //   * `updatedAt` is set by `SidecarStore.write` itself; callers never
 //     set it. This keeps every fresh write timestamped identically.
 //

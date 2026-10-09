@@ -20,6 +20,7 @@ public struct Course: Identifiable, Codable, Equatable, Hashable, Sendable {
     public var folderName: String
     public var title: String
     public var coverFileName: String?
+    public var description: String?
     public var tags: [String]
     public var modules: [Module]
 
@@ -28,6 +29,7 @@ public struct Course: Identifiable, Codable, Equatable, Hashable, Sendable {
         folderName: String,
         title: String,
         coverFileName: String? = nil,
+        description: String? = nil,
         tags: [String] = [],
         modules: [Module] = []
     ) {
@@ -35,6 +37,7 @@ public struct Course: Identifiable, Codable, Equatable, Hashable, Sendable {
         self.folderName = folderName
         self.title = title
         self.coverFileName = coverFileName
+        self.description = description
         self.tags = tags
         self.modules = modules
     }

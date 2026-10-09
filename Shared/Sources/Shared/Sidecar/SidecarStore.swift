@@ -137,9 +137,8 @@ public enum SidecarStore {
     ///
     /// Cheap and synchronous: pure data projection, no disk I/O.
     /// `updatedAt` stays `nil`; `SidecarWriter` stamps it on disk.
-    /// `description` is `nil` because the iOS UI doesn't expose it
-    /// yet — Fase 10's Mac editor will populate it and `apply` will
-    /// need to be widened at that point.
+    /// `description` is propagated from `course` so a Mac-edited
+    /// description survives the next iOS progress write (Fase 10).
     public static func snapshot(course: Course) -> Sidecar {
         var items: [String: SidecarItem] = [:]
         for item in course.allItems {
@@ -150,7 +149,7 @@ public enum SidecarStore {
             courseId: course.id,
             title: course.title,
             coverFileName: course.coverFileName,
-            description: nil,
+            description: course.description,
             tags: course.tags,
             items: items,
             updatedAt: nil
@@ -159,16 +158,24 @@ public enum SidecarStore {
 
     // MARK: - Apply
 
-    /// Merge persisted progress onto a freshly-built `Course`.
-    /// Only `courseId` and per-item `progress` are taken from the
-    /// sidecar; the rest of the course stays filesystem-derived so
-    /// folder renames flow through naturally. Sidecar items whose
-    /// relativePath no longer exists in the course are silently
-    /// dropped (plan §12).
+    /// Merge persisted metadata and progress onto a freshly-built
+    /// `Course`. As of Fase 10, the consumed subset is:
+    ///
+    ///   * `courseId` — stable identity across scans.
+    ///   * `description` — Mac editor's user-written prose.
+    ///   * `tags` — chip filter values for the iOS library.
+    ///   * Per-item `progress` — playback position, completion, etc.
+    ///
+    /// Everything else (title, cover, module/item structure) stays
+    /// filesystem-derived so a Finder rename flows through naturally.
+    /// Sidecar items whose relativePath no longer exists in the course
+    /// are silently dropped (plan §12).
     public static func apply(_ sidecar: Sidecar, to course: Course) -> Course {
         // Stable identity across scans.
         var merged = course
         merged.id = sidecar.courseId
+        merged.description = sidecar.description
+        merged.tags = sidecar.tags
 
         let progressByPath = sidecar.items
         let knownPaths = Set(course.allItems.map(\.relativePath))

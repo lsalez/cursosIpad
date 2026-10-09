@@ -73,7 +73,7 @@ private struct RootScene: View {
                 }
             } else if let selectionID = selection,
                       library.courses.contains(where: { $0.id == selectionID }) {
-                MacCourseDetailView(courseID: selectionID)
+                MacCourseEditor(courseID: selectionID)
             } else {
                 selectionPlaceholder
             }
