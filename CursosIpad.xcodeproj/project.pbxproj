@@ -86,7 +86,7 @@
 		36F84181D3B6B19FB49E69C7 /* HTMLViewerRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLViewerRepresentable.swift; sourceTree = "<group>"; };
 		39D915D3004D7055000EF9A1 /* CourseFilesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseFilesView.swift; sourceTree = "<group>"; };
 		3B274DD110302EAF4B27BB86 /* MacCourseEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacCourseEditor.swift; sourceTree = "<group>"; };
-		3C09071BDDE6DB1F3DEB5474 /* CursosIpad.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = CursosIpad.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3C09071BDDE6DB1F3DEB5474 /* CursosIpad.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CursosIpad.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3E6577613ED0485457F61735 /* MacCoverColorExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacCoverColorExtractor.swift; sourceTree = "<group>"; };
 		41CBB816DF3D7AB0D32B9515 /* CoverColorExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverColorExtractor.swift; sourceTree = "<group>"; };
 		4780CC8A07F665B92053BD86 /* CourseDescriptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseDescriptionView.swift; sourceTree = "<group>"; };
@@ -105,7 +105,7 @@
 		834F243046A11F392D7DD31D /* CourseHeroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseHeroView.swift; sourceTree = "<group>"; };
 		867AF7888C625F9241094AC5 /* MacSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacSettings.swift; sourceTree = "<group>"; };
 		86E06083B71B9B1CB14911EA /* VideoThumbnailLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoThumbnailLoader.swift; sourceTree = "<group>"; };
-		8A35C371F8F3E90F66712DDA /* Shared */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Shared; path = Shared; sourceTree = SOURCE_ROOT; };
+		8A35C371F8F3E90F66712DDA /* Shared */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Shared; sourceTree = SOURCE_ROOT; };
 		8BAC86969C10E234997C39C6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		955CB0FEF409426B08E6A378 /* VideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerView.swift; sourceTree = "<group>"; };
 		9EAF2C6138232C1165DDAF32 /* SubtitleIndexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleIndexer.swift; sourceTree = "<group>"; };
@@ -399,9 +399,6 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
-					55A6B771674B736DF873BD86 = {
-						DevelopmentTeam = "";
-					};
 					8E81DB7FD8A46A527BDECD7A = {
 						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
@@ -674,6 +671,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = LJZDEXR7VS;
 				INFOPLIST_FILE = iOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -690,6 +688,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = LJZDEXR7VS;
 				INFOPLIST_FILE = iOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
