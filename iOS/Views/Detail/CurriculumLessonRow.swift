@@ -94,8 +94,9 @@ struct CurriculumLessonRow: View {
                 .frame(width: 80, height: 45)
                 .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
         case .pdf, .html:
-            typeIcon
-                .frame(width: 36, height: 36)
+            placeholderThumb
+                .frame(width: 80, height: 45)
+                .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
         }
     }
 
@@ -122,20 +123,27 @@ struct CurriculumLessonRow: View {
         }
     }
 
-    private var typeIcon: some View {
+    /// 16:9 tile used by PDF and HTML rows so all three row types
+    /// (video / PDF / HTML) share the same height and visual language.
+    /// Same gradient as the video placeholder; the SF symbol is what
+    /// tells the type apart.
+    private var placeholderThumb: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: 6, style: .continuous)
-                .fill(Color.appMenu.opacity(0.08))
+            LinearGradient(
+                colors: [accent.opacity(0.6), accent.opacity(0.3)],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
             Image(systemName: iconName)
-                .font(.system(size: 16, weight: .semibold))
-                .foregroundStyle(Color.appMenu)
+                .font(.system(size: 22, weight: .semibold))
+                .foregroundStyle(.white)
         }
     }
 
     private var iconName: String {
         switch item.type {
         case .pdf: return "doc.richtext"
-        case .html: return "globe"
+        case .html: return "chevron.left.forwardslash.chevron.right"
         case .video: return "play.rectangle"
         }
     }
