@@ -10,7 +10,7 @@ consumir cursos con seguimiento de progreso.
 
 ## Progreso
 
-**Fase actual:** Fase 10 — Editor de curso (Mac) · **% global:** 71% · **Última act.:** 2026-10-09
+**Fase actual:** Fase 11 — Transferencia por WiFi · **% global:** 78% · **Última act.:** 2026-10-09
 
 | # | Fase | Estado | Cerrada |
 |---|------|--------|---------|
@@ -24,7 +24,7 @@ consumir cursos con seguimiento de progreso.
 | 7 | Visor PDF | ✅ | 2026-10-08 |
 | 8 | Visor HTML | ✅ | 2026-10-08 |
 | 9 | Biblioteca macOS + importador | ✅ | 2026-10-09 |
-| 10 | Editor de curso (Mac) | ⬜ | — |
+| 10 | Editor de curso (Mac) | ✅ | 2026-10-09 |
 | 11 | Transferencia por WiFi | ⬜ | — |
 | 12 | Detección por USB | ⬜ | — |
 | 13 | Pulido | ⬜ | — |
@@ -1209,17 +1209,31 @@ insertó como Fase 3 al detectar que faltaba cubrirla explícitamente.
 
 **Checklist:**
 
-- [ ] Drag & drop para reordenar módulos e items
-- [ ] Renombrar archivos y módulos
-- [ ] Eliminar archivos no deseados
-- [ ] Auto-detección de portada mejorada
-- [ ] Campo de etiquetas (chip input estilo Mail)
-- [ ] "Fijar este frame como miniatura" desde preview de video:
-  - [ ] Botón en el panel de preview
-  - [ ] Scrubea el video
-  - [ ] Exporta el frame como `<video>.jpg` junto al `.mp4`
+- [x] Drag & drop para reordenar módulos e items
+- [x] Renombrar archivos y módulos
+- [x] Eliminar archivos no deseados
+- [x] Auto-detección de portada mejorada
+- [x] Campo de etiquetas (chip input estilo Mail)
+- [x] "Fijar este frame como miniatura" desde preview de video:
+  - [x] Botón en el panel de preview
+  - [x] Scrubea el video
+  - [x] Exporta el frame como `<video>.jpg` junto al `.mp4`
 
 **Entregable:** editor usable + herramienta para fijar miniaturas.
+
+**Notas de implementación (desviaciones del plan original):**
+
+- `Course` ahora carga `description: String?` para que el editor Mac pueda leer el valor del sidecar a través de la `Course` en vez de `SidecarStore.read` directo (consistencia con `title`/`coverFileName`/`tags`). `SidecarStore.apply()` se ensanchó para consumir `description` y `tags` (cierra la deuda que la nota de cierre de Fase 9 dejó explícita). `snapshot()` propaga `description` — sin esto, el primer write de progreso del iOS borraría la descripción que el Mac acaba de escribir.
+- Como side effect del ensanche de `apply()`, los chips de tags de la biblioteca iOS (`iOS/Views/Library/LibraryView.swift:366`) y el filtro por etiqueta empiezan a funcionar en cuanto un curso tenga tags en su sidecar. La pestaña "Descripción" del iOS (`iOS/Views/Detail/CourseDescriptionView.swift`) ahora muestra el texto escrito en Mac — verificado con un cambio de 5 líneas en `CourseDetailView.swift:316`.
+- `MacCourseOutline` usa SwiftUI's `.draggable` + `.dropDestination` con un `Transferable` privado (`OutlineTransfer`) para los drops entre módulos, y `.onMove` para reordenar intra-módulo. Reordenar persiste renombrando con prefijo numérico (`01-`, `02-`, …) — el indexer ordena por `localizedStandardCompare`, así que el filesystem es la fuente de verdad. Colisiones se resuelven subiendo el prefijo (`02, 03, 04…`); el usuario puede limpiar manualmente si quiere una secuencia estricta.
+- Borrado via `FileManager.trashItem` (recuperable desde la Papelera). El sidecar se limpia de las entradas huérfanas en el próximo `snapshot(course:)`.
+- Rename muestra un alert de "se perderá el progreso" antes de confirmar (per contrato Fase 5 en `Sidecar.swift:29-32`). Copy distinto para módulo (afecta N lecciones) vs ítem (1).
+- `MacVideoThumbnailExtractor` mirror del iOS `ThumbnailGenerator` pero sin UIKit (usa `CGImage` directo + `CGImageDestination`). Reusado por el botón "Fijar este frame" y por `autoDetectCoverImproved`.
+- "Fijar este frame" usa `VideoPlayer` de SwiftUI (macOS 14+) en vez de envolver `AVPlayerView` con `NSViewRepresentable`. Un `TimelineView(.periodic(by: 0.25))` samplea `timeControlStatus` para deshabilitar el botón cuando el video no está en pausa. Atajo ⌘F. Escribe a `<video>.jpg` junto al `.mp4` — el iOS app lo recoge como miniatura provista (prioridad 1 en §13.1) en el próximo index.
+- `autoDetectCoverImproved` mantiene la prioridad existente (`cover.jpg` → `cover.png` → primera imagen en raíz) y agrega un fallback: si no hay imágenes, extrae un frame del primer video del curso a 25% de duración y lo guarda como `cover.jpg`. No promueve `<video>.jpg` siblings a portada — la regla de §13.1 es que esos son thumbnails por-lección, no candidatos a cover.
+- ⚠️ El botón "Enviar al iPad" del bottom bar es un placeholder disabled (Fase 11).
+- ⚠️ Drag & drop de carpetas desde Finder hacia la app no se implementó (Fase 9 original mencionaba "arrastrar o abrir" pero el implementador optó por NSOpenPanel solamente; queda como follow-up).
+- ⚠️ No hay test target; la verificación es smoke test manual según la matriz de §Fase 10 del plan.
 
 ---
 
